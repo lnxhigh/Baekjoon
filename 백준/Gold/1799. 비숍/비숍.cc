@@ -33,7 +33,7 @@ bool promising(xy loc, vector<xy> bishopLocation) {
     return true;
 }
 
-void chess(vector<xy> possibleLocation, vector<xy> bishopLocation, int &answer, int start) {
+void chess(vector<xy>& possibleLocation, vector<xy>& bishopLocation, int &answer, int start) {
     int s = possibleLocation.size();
     for (int i = start; i < s; i++) {
         xy loc = possibleLocation[i];
