@@ -5,26 +5,23 @@ using namespace std;
 
 ll A, B;
 
-ll count(ll X) {
-    if (X <= 1LL) return 0LL;
-    ll msb = -1LL, ssb = -1LL;
+ll count(ll x) {
+    if (x <= 1) return 0;
 
-    for (ll i = N-1LL; i >= 0LL; i--) {
-        ll bit = ( X & (1LL << i) ) >> i;
-        if (bit) { msb = i; break; }
+    ll bits[2] = {-1, -1};
+    ll cnt = 0;
+
+    for (ll i = N-1; i >= 0; i--) {
+        if (cnt >= 2) { break; }
+        ll bit = ( x & (1LL << i) ) >> i;
+        if (bit) { bits[cnt++] = i; }
     }
     
-    for (ll i = msb-1LL; i >= 0LL; i--) {
-        ll bit = ( X & (1LL << i) ) >> i;
-        if (bit) { ssb = i; break; }
+    ll first = bits[0], second = bits[1];
+    for (ll i = first; i > second; i--) {
+        x = x & ~(1LL << i);
     }
-    
-    if (ssb == -1LL) { return msb * (1LL << (msb-1LL)); }
-    
-    for (ll i = msb; i > ssb; i--) {
-        X = X & ~(1LL << i);
-    }
-    return msb * (1LL << (msb-1LL)) + count(X) + X;
+    return first * (1LL << (first - 1)) + count(x) + x;
 }
 
 int main() {
@@ -32,7 +29,7 @@ int main() {
     cin.tie(nullptr); cout.tie(nullptr);
     
     cin >> A >> B;
-    cout << count(B+1) - count(A);
+    cout << count(B+1) - count(A) << '\n';
     
     return 0;    
 }
