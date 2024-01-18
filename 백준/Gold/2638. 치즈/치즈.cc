@@ -19,16 +19,6 @@ void input(int &H, int &W, int paper[101][101]) {
     }
 }
 
-void print(int paper[101][101]) {
-    for (int h = 0; h < H; h++) {
-        for (int w = 0; w < W; w++) {
-            cout << paper[h][w] << ' ';
-        }
-        cout << '\n';
-    }
-    cout << '\n';
-}
-
 void init(vector<xy> &start) {
     // initialize starting point
     for (int h = 0; h < H; h++) {
