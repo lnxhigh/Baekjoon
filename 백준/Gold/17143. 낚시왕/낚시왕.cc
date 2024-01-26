@@ -8,14 +8,14 @@ public:
     int i, r, c, s, d, z;
 };
 
+// sorting issue
 bool operator< (const Shark &left, const Shark &right) {
     if (left.s < right.s) return true;
     else if (left.s > right.s) return false;
-    else {
-        if (left.i < right.i) return true;
-        else if (left.i > right.i) return false;
-        else return false;
-    }
+    
+    if (left.i < right.i) return true;
+    else if (left.i > right.i) return false;
+    
     return false;
 }
 
