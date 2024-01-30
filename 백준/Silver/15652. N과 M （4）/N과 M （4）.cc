@@ -6,7 +6,7 @@ int N, M;
 vector<int> arr;
 
 void backtrack(vector<int>& arr, int m, int depth) {
-    if (depth == M-1) {
+    if (depth == M) {
         for (int x : arr) {
             cout << x << ' ';
         }
@@ -27,11 +27,7 @@ int main() {
     cin.tie(nullptr); cout.tie(nullptr);
     
     cin >> N >> M;
-    for (int i = 1; i <= N; i++) {
-        arr.push_back(i);
-        backtrack(arr, i, 0);
-        arr.pop_back();
-    }
+    backtrack(arr, 0, 0);
 
     return 0;
 }
