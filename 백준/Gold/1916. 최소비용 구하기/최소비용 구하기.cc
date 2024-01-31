@@ -1,35 +1,39 @@
 #include <iostream>
 #include <vector>
-#include <utility>
 #include <queue>
+#include <utility>
 #define N_MAX 1001
-#define INF 1000000000
+#define M_MAX 100001
+#define INF 100000000
 using namespace std;
 using iPair = pair<int,int>;
 
-int N, M; // N <= 1000, M <= 100000
-int A, B, C; // C <= 100000
-vector<iPair> graph[N_MAX]; // <cost,to>
+int N, M;
+int A, B, C;
+vector<iPair> graph[N_MAX];
 int dist[N_MAX];
 
 void dijkstra(int start) {
-    priority_queue<iPair,vector<iPair>,greater<iPair>> pq;
+    priority_queue<iPair, vector<iPair>, greater<iPair>> pq;
+
+    // Init
+    for (int i = 0; i <= N; i++) {
+        dist[i] = INF;
+    }
     dist[start] = 0;
-    pq.push({0, start});
+    pq.push({ 0, start });
 
+    // Update
     while (not pq.empty()) {
-        iPair k = pq.top();
-        int cost1 = k.first;
-        int cur = k.second;
+        int cost1 = pq.top().first;
+        int cur = pq.top().second;
         pq.pop();
-        
-        if (dist[cur] < cost1) {
-            continue;
-        }
 
-        for (iPair s : graph[cur]) {
+        if (dist[cur] < cost1) continue;
+        for (auto s : graph[cur]) {
             int cost2 = s.first;
             int next = s.second;
+
             if (dist[next] > cost1 + cost2) {
                 dist[next] = cost1 + cost2;
                 pq.push({ cost1 + cost2, next });
@@ -42,17 +46,18 @@ int main() {
     ios::sync_with_stdio(false);
     cin.tie(nullptr); cout.tie(nullptr);
     
+    // Input
     cin >> N >> M;
-    for (int i = 1; i <= N; i++) {
-        dist[i] = INF;
-    }
-    for (int m = 1; m <= M; m++) {
+    for (int i = 0; i < M; i++) {
         cin >> A >> B >> C;
-        graph[A].push_back({C, B});
+        graph[A].push_back({ C, B });
     }
     cin >> A >> B;
+    
+    // Dijkstra
     dijkstra(A);
     
+    // Answer
     cout << dist[B] << '\n';
     
     return 0;
