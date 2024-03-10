@@ -12,8 +12,7 @@ using Point = pair<int,int>;
 
 int N;
 Point points[N_MAX];
-Point points_ccw[N_MAX];
-vector<Point> stack;
+vector<Point> hull;
 
 int ccw(Point A, Point B, Point C) {
     int dir;
@@ -28,6 +27,7 @@ int ccw(Point A, Point B, Point C) {
 
 double angle(const Point &point, const Point &origin) {
     double x = point.X - origin.X, y = point.Y - origin.Y;
+    if (x == 0.0 && y == 0.0) return 0.0;
     double slope = y / x;
 
     double theta = atan(slope);
@@ -58,28 +58,20 @@ int main() {
         points[i] = { x, y };
     }
     
-    Point start = points[0];
-    int start_idx = 0;
+    int key = 0;
     for (int i = 1; i < N; i++) {
-        bool m = false;
-        if (points[i].Y < start.Y) { m = true; }
-        else if (points[i].Y == start.Y) {
-            if (points[i].X < start.X) { m = true; }
-        }
-        if (m) {
-            start = points[i];
-            start_idx = i;
-        }
-    }
+        Point p = points[key];
+        bool flag = false;
 
-    points_ccw[0] = start;
-    for (int i = 0; i < N; i++) {
-        if (i < start_idx) points_ccw[i+1] = points[i];
-        else if (i > start_idx) points_ccw[i] = points[i];
-        else continue;
+        if (points[i].Y < p.Y) flag = true;
+        else if (points[i].Y == p.Y) {
+            if (points[i].X < p.X) flag = true;
+        }
+        if (flag) key = i;
     }
     
-    sort(points_ccw + 1, points_ccw + N, [&start](const Point &a, const Point &b) {
+    Point start = points[key];
+    sort(points, points + N, [&start](const Point &a, const Point &b) {
         double theta1 = angle(a, start);
         double theta2 = angle(b, start);
 
@@ -93,28 +85,28 @@ int main() {
         return false;
     });
 
-    stack.push_back(points_ccw[0]);
-    stack.push_back(points_ccw[1]);
+    hull.push_back(points[0]);
+    hull.push_back(points[1]);
     for (int i = 2; i < N; i++) {
-        Point next = points_ccw[i];
+        Point next = points[i];
         while (true) {
-            Point prev = *(stack.end()-2);
-            Point cur = *(stack.end()-1);
+            Point prev = *(hull.end()-2);
+            Point cur = *(hull.end()-1);
             int dir = ccw(prev, cur, next);
 
             if (dir >= 0) {
-                if (dir == 0) { stack.pop_back(); }
-                stack.push_back(next);
+                if (dir == 0) { hull.pop_back(); }
+                hull.push_back(next);
                 break;
             }
             else {
-                if (stack.size() <= 2) { break; }
-                stack.pop_back();
+                if (hull.size() <= 2) { break; }
+                hull.pop_back();
             }
         }
     }
 
-    cout << stack.size() << '\n';
-
+    cout << hull.size() << '\n';
+    
     return 0;
 }
