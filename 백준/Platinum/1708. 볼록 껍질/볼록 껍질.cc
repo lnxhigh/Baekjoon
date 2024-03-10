@@ -90,20 +90,16 @@ int main() {
     for (int i = 2; i < N; i++) {
         Point next = points[i];
         while (true) {
+            if (hull.size() < 2) break;
             Point prev = *(hull.end()-2);
             Point cur = *(hull.end()-1);
+            
             int dir = ccw(prev, cur, next);
-
-            if (dir >= 0) {
-                if (dir == 0) { hull.pop_back(); }
-                hull.push_back(next);
-                break;
-            }
-            else {
-                if (hull.size() <= 2) { break; }
-                hull.pop_back();
-            }
+            if (dir == 1) break;
+            
+            hull.pop_back();
         }
+        hull.push_back(next);
     }
 
     cout << hull.size() << '\n';
