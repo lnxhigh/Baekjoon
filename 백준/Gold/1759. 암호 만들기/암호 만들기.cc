@@ -36,21 +36,20 @@ int main() {
     }
 
     for (int bit : bits) {
-        int cnt = 0;
         int v = 0, c = 0;
-        char password[20];
-        password[L] = '\0';
+        string password = "";
 
         for (int i = 0; i < C; i++) {
             if (bit & (1 << i)) {
-                password[cnt++] = alphabets[i];
-                if (is_vowel(alphabets[i])) v++;
+                char x = alphabets[i];
+                password += x;
+                if (is_vowel(x)) v++;
                 else c++;
             }
         }
 
         if (v >= 1 and c >= 2) {
-            passwords.push_back(string(password));
+            passwords.push_back(password);
         }
     }
     
