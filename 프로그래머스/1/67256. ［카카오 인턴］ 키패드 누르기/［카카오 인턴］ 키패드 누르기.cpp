@@ -27,36 +27,21 @@ string solution(vector<int> numbers, string hand) {
     for (int num : numbers) {
         string dir;
         
-        if (num == 1 || num == 4 || num == 7) {
-            leftPos = loc[num];
-            dir = "L";
-        }
-        else if (num == 3 || num == 6 || num == 9) {
-            rightPos = loc[num];
-            dir = "R";
-        }
+        if (num == 1 || num == 4 || num == 7) dir = "L";
+        else if (num == 3 || num == 6 || num == 9) dir = "R";
         else {
             int ld = dist(leftPos, loc[num]);
             int rd = dist(rightPos, loc[num]);
-            if (ld < rd) {
-                dir = "L";
-                leftPos = loc[num];
-            }
-            else if (ld > rd) {
-                dir = "R";
-                rightPos = loc[num];
-            }
+            if (ld < rd) dir = "L";
+            else if (ld > rd) dir = "R";
             else {
-                if (hand == "left") {
-                    dir = "L";
-                    leftPos = loc[num];
-                }
-                else if (hand == "right") {
-                    dir = "R";
-                    rightPos = loc[num];
-                }
+                if (hand == "left") dir = "L";
+                else if (hand == "right") dir = "R";
             }
         }
+        
+        if (dir == "L") leftPos = loc[num];
+        else if (dir == "R") rightPos = loc[num];
         
         answer += dir;
     }
