@@ -1,16 +1,16 @@
 def solution(s):
-    answer = 0
-    stack = []
+    N = len(s)
+    cnt, top, size = 0, 0, 0
     
-    for c in s:
-        if not stack or stack[-1] == c:
-            stack.append(c)
+    for i in range(N):
+        if not size or s[top] == s[i]:
+            size += 1
         else:
-            stack.pop()
-            if not stack: 
-                answer += 1
+            size -= 1
+            if not size: 
+                top = i+1
+                cnt += 1
     
-    if stack:
-        answer += 1
-        
-    return answer
+    if size:
+        cnt += 1
+    return cnt
