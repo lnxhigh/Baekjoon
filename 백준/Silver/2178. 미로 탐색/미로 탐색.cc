@@ -1,63 +1,57 @@
-#include <iostream>
-#include <utility>
-#include <queue>
+#include <bits/stdc++.h>
+#define X first
+#define Y second
 using namespace std;
 
-int N, M;
-int maze[101][101];
-int dist[101][101];
-bool visited[101][101] = {false,};
-queue<pair<pair<int,int>,int>> q;
+int R, C;
+int maze[100][100];
+int dist[100][100] = {0,};
 
-void input(int &N, int &M, int maze[101][101]) {
-    cin >> N >> M;
+void bfs(pair<int,int> start, int maze[100][100]) {
+    int visited[100][100] = {0,};
+    queue< pair< pair<int,int>, int > > q;
+    
+    q.push({start, 0});
+    visited[start.X][start.Y]++;
 
-    for (int i = 0; i < N; i++) {
-        char line[101];
-        cin >> line;
-        for (int j = 0; j < M; j++) {
-            maze[i][j] = line[j] - '0';
+    int dx[4] = {0, 0, -1, +1};
+    int dy[4] = {-1, +1, 0, 0};
+
+    while (not q.empty()) {
+        pair<int,int> cur = q.front().X;
+        int depth = q.front().Y;
+        q.pop();
+
+        dist[cur.X][cur.Y] = depth;
+
+        for (int i = 0; i < 4; i++) {
+            int x = cur.X + dx[i], y = cur.Y + dy[i];
+            pair<int,int> next = {x, y};
+
+            if (x < 0 || x >= R) continue;
+            if (y < 0 || y >= C) continue;
+            if (visited[x][y]++) continue;
+            if (maze[x][y] == 0) continue;
+
+            q.push({next, depth+1});
         }
     }
+
 }
 
 int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr); cout.tie(nullptr);
+    cin >> R >> C;
 
-    input(N, M, maze);
-
-    q.push({{0, 0}, 1});
-    visited[0][0] = true;
-    dist[0][0] = 1;
-
-    pair<int,int> move[4] = { {-1,0}, {+1,0}, {0,-1}, {0,+1} };
-    while (not q.empty()) {
-        pair<pair<int,int>,int> info = q.front();
-        q.pop();
-        
-        pair<int,int> x = info.first;
-        int depth = info.second;
-
-        for (pair<int,int> m : move) {
-            int a = x.first + m.first;
-            int b = x.second + m.second;
-
-            if (a < 0 or a >= N) continue;
-            if (b < 0 or b >= M) continue;
-
-            if (visited[a][b]) continue;
-
-            visited[a][b] = true;
-            dist[a][b] = depth+1;
-
-            if (maze[a][b] == 1) {
-                q.push({{a, b}, depth+1});
-            }
+    for (int r = 0; r < R; r++) {
+        for (int c = 0; c < C; c++) {
+            char x;
+            cin >> x;
+            maze[r][c] = x - '0';
         }
     }
-    
-    cout << dist[N-1][M-1] << '\n';
 
+    bfs({0, 0}, maze);
+    cout << dist[R-1][C-1] + 1 << "\n";
+    
     return 0;
 }
