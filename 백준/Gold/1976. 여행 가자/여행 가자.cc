@@ -6,16 +6,34 @@ int N, M;
 int graph[N_MAX][N_MAX] = {0,};
 int travel[N_MAX];
 
-bool connected[N_MAX][N_MAX] = {false,};
+int parent[N_MAX];
+
+int find(int x) {
+    if (x == parent[x]) return x;
+    return parent[x] = find(parent[x]);
+}
+
+void merge(int x, int y) {
+    x = find(x); y = find(y);
+    if (x == y) return;
+    if (x > y) parent[x] = y;
+    else       parent[y] = x;
+}
 
 int main() {
     ios::sync_with_stdio(false);
-    cin.tie(NULL); cout.tie(NULL);
+    cin.tie(nullptr); cout.tie(nullptr);
     cin >> N >> M;
 
-    for (int i = 0; i < N; i++) {
-        for (int j = 0; j < N; j++) {
-            cin >> graph[i][j];
+    for (int i = 1; i <= N; i++) {
+        parent[i] = i;
+    }
+
+    for (int i = 1; i <= N; i++) {
+        for (int j = 1; j <= N; j++) {
+            int x;
+            cin >> x;
+            if (x > 0) merge(i, j);
         }
     }
 
@@ -23,34 +41,13 @@ int main() {
         cin >> travel[i];
     }
 
-    for (int i = 0; i < N; i++) {
-        for (int j = 0; j < N; j++) {
-            if (i == j) connected[i][j] = true;
-            else connected[i][j] = (graph[i][j] > 0);
-        }
-    }
-
-    for (int k = 0; k < N; k++) {
-        for (int i = 0; i < N; i++) {
-            for (int j = 0; j < N; j++) {
-                if (connected[i][k] && connected[k][j]) {
-                    connected[i][j] = true;
-                }
-            }
-        }
-    }
-
     bool canReach = true;
-    int from = travel[0] - 1;
+    int root = find(travel[0]);
     for (int i = 0; i < M; i++) {
-        int to = travel[i] - 1;
-        if (!connected[from][to]) {
-            canReach = false;
-        }
-        from = to;
+        if (find(travel[i]) != root) canReach = false;
     }
-
     string answer = canReach ? "YES" : "NO";
     cout << answer << '\n';
+
     return 0;
 }
