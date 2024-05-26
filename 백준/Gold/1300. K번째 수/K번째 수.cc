@@ -8,9 +8,6 @@ int main() {
     ios::sync_with_stdio(false);
     cin.tie(nullptr); cout.tie(nullptr);
     cin >> N >> K;
-
-    int r = K / N;
-    int c = K % N;
     
     ll answer;
     ll start = 1LL, end = 1LL * N * N;
@@ -34,8 +31,5 @@ int main() {
     }
 
     cout << answer << '\n';
-
-    // answer 이상의 존재하는 최소의 수 찾기 ?
-
     return 0;
 }
