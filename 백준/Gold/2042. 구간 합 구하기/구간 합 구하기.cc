@@ -4,6 +4,7 @@
 using namespace std;
 
 // 틀리는 이유를 도저히 모르겠음 ...
+// arr의 인덱스를 1부터 시작하면 틀리는 이유 ...?
 
 int N, U, Q;
 ll arr[N_MAX];
@@ -43,20 +44,20 @@ int main() {
     ios::sync_with_stdio(false);
     cin.tie(nullptr); cout.tie(nullptr);
     cin >> N >> U >> Q;
-    for (int i = 0; i < N; i++) {
+    for (int i = 1; i <= N; i++) {
         cin >> arr[i];
     }
-    init(1, 0, N-1);
+    init(1, 1, N);
 
     int T = U + Q;
     for (int i = 0; i < T; i++) {
         ll a, b, c;
         cin >> a >> b >> c;
         if (a == 1) {
-            update(1, 0, N-1, b-1, c - arr[b-1]);
-            arr[b-1] = c;
+            update(1, 1, N, b, c - arr[b]);
+            arr[b] = c;
         }
-        else if (a == 2) cout << query(1, 0, N-1, b-1, c-1) << '\n';
+        else if (a == 2) cout << query(1, 1, N, b, c) << '\n';
     }
     
     return 0;
