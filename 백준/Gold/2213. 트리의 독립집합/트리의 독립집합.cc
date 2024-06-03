@@ -6,10 +6,16 @@ int N;
 int W[N_MAX];
 vector<int> graph[N_MAX];
 
+// D[k][i] 설명
+// k == 0 이면 노드 i 를 포함하지 않는 상태. k == 1 이면 i 를 포함하는 상태.
+// i 는 i 를 루트로 하는 서브 트리에 대해 최대 독립집합의 크기를 의미
 int D[2][N_MAX];
 bool visited[N_MAX];
+
+// P 는 최단거리 역추적을 위함
 vector<pair<int,int>> P[2][N_MAX];
 
+// Leaf 에서 시작해서 DP 를 돌리는 함수
 void dfs(int parent) {
     for (int child : graph[parent]) {
         if (visited[child]) continue;
@@ -41,7 +47,7 @@ int main() {
     }
 
     // Root 는 편의를 위해 설정한 것으로 1이 아니어도 상관 없다
-    int root = 2;
+    int root = 1;
     visited[root] = true;
     dfs(root);
     
