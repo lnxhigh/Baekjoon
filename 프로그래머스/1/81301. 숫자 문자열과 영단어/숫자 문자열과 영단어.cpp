@@ -1,3 +1,4 @@
+#include <iostream>
 #include <string>
 #include <vector>
 
@@ -9,19 +10,23 @@ int solution(string s) {
         "five", "six", "seven", "eight", "nine"                   
     };
     
-    int answer = 0;
+    string res = "";   
     int size = s.size();
+    
     for (int i = 0; i < size; i++) {
         for (int k = 0; k < 10; k++) {
-            if (i < size - 3 + 1 && s.substr(i, 3) == table[k].substr(0, 3)) {
-                answer = answer * 10 + k;
+            int m = table[k].size();
+            if (s[i] >= '0' && s[i] <= '9') {
+                res += s[i];
                 break;
             }
-            else if (s.substr(i,1) == to_string(k)) {
-                answer = answer * 10 + k;
+            else if (i < size - m + 1 && s.substr(i, m) == table[k]) {
+                res += to_string(k);
                 break;
-            } 
+            }
         }
     }
+    
+    int answer = stoi(res);
     return answer;
 }
