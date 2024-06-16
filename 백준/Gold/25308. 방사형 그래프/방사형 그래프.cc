@@ -42,31 +42,6 @@ bool isConvex(vector<int> &perm) {
     return true;
 }
 
-void dfs(vector<int> &permutation) {
-    if (permutation.size() == N) {
-        if (isConvex(permutation)) {
-            answer++;
-        }
-        return;
-    }
-
-    for (int i = 0; i < N; i++) {
-        bool check = true;
-        for (int k : permutation) {
-            if (k == i) {
-                check = false;
-                break;
-            }
-        }
-
-        if (check) {
-            permutation.push_back(i);
-            dfs(permutation);
-            permutation.pop_back();
-        }
-    }
-}
-
 int main() {
     ios::sync_with_stdio(false);
     cin.tie(NULL); cout.tie(NULL);
@@ -74,8 +49,11 @@ int main() {
         cin >> ability[i];
     }
 
-    vector<int> permutation;
-    dfs(permutation);
+    vector<int> perm;
+    for (int i = 0; i < N; i++) perm.push_back(i);
+    do {
+        if (isConvex(perm)) answer++;
+    } while (next_permutation(perm.begin(), perm.end()));
     cout << answer << '\n';
 
     return 0;
