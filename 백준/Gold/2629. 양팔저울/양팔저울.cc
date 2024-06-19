@@ -13,34 +13,26 @@ int main() {
     cin >> N;
     for (int i = 1; i <= N; i++) {
         cin >> W[i];
+        K += W[i];
     }
     cin >> M;
     for (int i = 1; i <= M; i++) {
         cin >> X[i];
     }
 
-    // 최대 무게 설정
-    for (int i = 1; i <= N; i++) {
-        K += W[i];
-    }
-
     // DP 배열 채우기
     for (int i = 0; i <= N; i++) {
         D[i][0] = true;
     }
-
     for (int i = 1; i <= N; i++) {
         for (int k = 1; k <= K; k++) {
-            D[i][k] = D[i-1][k] || D[i-1][abs(W[i]-k)] || D[i-1][k+W[i]];
+            D[i][k] = D[i-1][k] || D[i-1][abs(k-W[i])] || D[i-1][k+W[i]];
         }
     }
     
     // 결과 출력
     for (int i = 1; i <= M; i++) {
-        char ans;
-        if (X[i] > K) ans = 'N';
-        else if (D[N][X[i]]) ans = 'Y';
-        else ans = 'N';
+        char ans = (X[i] > K) ? 'N' : D[N][X[i]] ? 'Y' : 'N';
         cout << ans << ' ';
     }
     cout << '\n';
