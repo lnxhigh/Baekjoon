@@ -15,9 +15,8 @@ int main() {
     for (int i = 0; i < W; i++) {
         cin >> A[i];
     }
-    A[W++] = 0;
 
-    for (int i = 0; i <= W; i++) {
+    for (int i = 0; i < W; i++) {
         int k = 0;
         while (!st.empty() && A[st.top()] < A[i]) {
             res += (i - st.top() - 1) * (A[st.top()] - k);
