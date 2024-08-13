@@ -1,60 +1,17 @@
 #include <bits/stdc++.h>
 using namespace std;
+using xy = pair<int,int>;
 
 int R, C;
 const int MAX = 1 << 7;
+const int INF = 1 << 20;
 bool maze[MAX][MAX];
-bool visited[MAX][MAX];
 
-int res = 0;
+int dist[MAX][MAX];
+deque<xy> dq;
+
 int dx[4] = { -1, 0, +1, 0 };
 int dy[4] = { 0, -1, 0, +1 };
-
-void Initialize() {
-    fill(&visited[0][0], &visited[R-1][C-1], false);
-}
-
-void Explore(int x, int y) {
-    visited[x][y] = true;
-    for (int i = 0; i < 4; i++) {
-        int nx = x + dx[i], ny = y + dy[i];
-        if (nx < 0 || nx >= R || ny < 0 || ny >= C) continue;
-        if (visited[nx][ny] || maze[nx][ny]) continue;
-        Explore(nx, ny);
-    }
-}
-
-bool CanReach() {
-    return visited[R-1][C-1];
-}
-
-void Destroy() {
-    vector<pair<int,int>> xy;
-
-    for (int r = 0; r < R; r++) {
-        for (int c = 0; c < C; c++) {
-            if (!visited[r][c] || maze[r][c]) continue;
-
-            int cnt = 0;
-            for (int i = 0; i < 4; i++) {
-                int nx = r + dx[i], ny = c + dy[i];
-                if (nx < 0 || nx >= R || ny < 0 || ny >= C) continue;
-                if (maze[nx][ny]) cnt++;
-            }
-
-            if (cnt > 0) { xy.push_back({ r, c }); }
-        }
-    }
-    
-    for (pair<int,int> p : xy) {
-        int r = p.first, c = p.second;
-        for (int i = 0; i < 4; i++) {
-            int nx = r + dx[i], ny = c + dy[i];
-            if (nx < 0 || nx >= R || ny < 0 || ny >= C) continue;
-            maze[nx][ny] = false;
-        }
-    }
-}
 
 int main() {
     ios::sync_with_stdio(false);
@@ -67,16 +24,32 @@ int main() {
             maze[r][c] = (x == '1');
         }
     }
+    
+    fill(&dist[0][0], &dist[R-1][C-1] + 1, INF);
+    dist[0][0] = 0;
+    dq.push_front({0, 0});
+    
+    while (!dq.empty()) {
+        xy cur = dq.front();
+        int x = cur.first, y = cur.second;
+        dq.pop_front();
 
-    while (true) {
-        Initialize();
-        Explore(0, 0);
-        if (CanReach()) break;
+        for (int i = 0; i < 4; i++) {
+            int nx = x + dx[i], ny = y + dy[i];
+            if (nx < 0 || nx >= R || ny < 0 || ny >= C) continue;
 
-        res++;
-        Destroy();
+            int weight = maze[nx][ny] ? 1 : 0;
+            if (dist[nx][ny] > dist[x][y] + weight) {
+                dist[nx][ny] = dist[x][y] + weight;
+                
+                xy next = { nx, ny };
+                if (weight == 0) dq.push_front(next);
+                else dq.push_back(next);
+            }
+        }
+
     }
 
-    cout << res << '\n';
+    cout << dist[R-1][C-1] << '\n';
     return 0;
 }
