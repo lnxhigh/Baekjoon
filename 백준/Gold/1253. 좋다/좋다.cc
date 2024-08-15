@@ -1,14 +1,32 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-int N;
+int N, X;
 const int MAX = 1 << 11;
 int A[MAX];
 
-unordered_map<int,int> counts;
-unordered_map<int,bool> isGood;
+// Two Pointers
+bool IsGood(int k) {
+    int target = A[k];
+    int first = 0, last = N-1;
 
-// naive solution => check TLE
+    while (first < last) {
+        bool self = (first == k) || (last == k);
+        if (self) {
+            if (first == k) first++;
+            if (last  == k) last-- ;
+            continue;
+        }
+
+        int sum = A[first] + A[last];
+
+        if (sum < target) first++;
+        else if (sum > target) last--;
+        else return true;
+    }
+
+    return false;
+}
 
 int main() {
     ios::sync_with_stdio(false);
@@ -16,34 +34,11 @@ int main() {
     cin >> N;
     for (int i = 0; i < N; i++) cin >> A[i];
 
-    // deal with exception of zero ...
+    sort(A, A + N);
     for (int i = 0; i < N; i++) {
-        for (int j = i+1; j < N; j++) {
-            if (A[i] != 0 && A[j] != 0) isGood[A[i] + A[j]] = true;;
-        }
+        if (IsGood(i)) X++;
     }
 
-    // save counts
-    for (int i = 0; i < N; i++) {
-        counts[A[i]]++;
-    }
-
-    // handle zero
-    int zeros = counts[0];
-    if (zeros > 2) isGood[0] = true;
-    
-    if (zeros > 0) {
-        for (int i = 0; i < N; i++) {
-            if (A[i] != 0 && counts[A[i]] > 1) isGood[A[i]] = true;
-        }
-    }
-
-    // get result
-    int cnt = 0;
-    for (int i = 0; i < N; i++) {
-        if (isGood[A[i]]) cnt++;
-    }
-
-    cout << cnt << '\n';
+    cout << X << '\n';
     return 0;
 }
