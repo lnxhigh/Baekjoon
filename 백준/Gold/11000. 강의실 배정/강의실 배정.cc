@@ -3,7 +3,7 @@ using namespace std;
 
 int N;
 const int MAX = 1 << 18;
-pair<int,int> course[MAX];
+pair<int,int> C[MAX];
 priority_queue<int, vector<int>, greater<int>> pq;
 
 int main() {
@@ -14,27 +14,19 @@ int main() {
     for (int i = 0; i < N; i++) {
         int S, E;
         cin >> S >> E;
-        course[i] = { S, E };
+        C[i] = { S, E };
     }
     
-    sort(course, course + N);
+    sort(C, C + N);
 
-    int res = 0;
+    int X = 0;
     for (int i = 0; i < N; i++) {
-        int S = course[i].first, E = course[i].second;
-        
-        // If the remaining minimum end time is less than or equal to start time of current course,
-        // that information is no longer useful because we sorted courses by start time
-        // This logic is similar to problems using stack, if I can get the currect answer ...
+        int S = C[i].first, E = C[i].second;
         while (!pq.empty() && pq.top() <= S) pq.pop();
-
-        // push current one that can be processed later
         pq.push(E);
-
-        // pq.size() means there are pq.size() duplicated courses
-        res = max(res, (int) pq.size());
+        X = max(X, (int) pq.size());
     }
 
-    cout << res << '\n';
+    cout << X << '\n';
     return 0;
 }
