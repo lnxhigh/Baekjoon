@@ -1,26 +1,16 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-string stick;
-stack<int> st;
-const int MAX = 1 << 17;
-int res = 0;
+string S;
+int X, K, L;
 
 int main() {
-    cin >> stick;
-
-    for (int i = 0; i < (int) stick.size(); i++) {
-        char par = stick[i];
-        if (par == '(') {
-            st.push(par);
-        }
-        else if (par == ')') {
-            st.pop();
-            bool isLaser = (stick[i-1] == '(');
-            res += isLaser ? (int) st.size() : 1;
-        }
+    cin >> S;
+    L = S.size();
+    for (int i = 0; i < L; i++) {
+        if (S[i] == '(') { K++; }
+        else { K--; X += (S[i-1] == '(') ? K : 1; }
     }
-
-    cout << res << '\n';
+    cout << X << '\n';
     return 0;
 }
