@@ -26,10 +26,11 @@ vector<int> generate(int X) {
     int mul = 1;
     while (K) {
         int d = K % 10;
-        int Y = X - d * mul;
+        int S = X - d * mul;
         for (int i = 0; i < 10; i++) {
-            if (i == d || (i == 0 && mul == 1000)) continue;
-            res.push_back(Y + i * mul);
+            int Y = S + mul * i;
+            if (visited[Y] || !isPrime[Y] || Y < 1000) continue;
+            res.push_back(Y);
         }
         
         K /= 10;
@@ -43,18 +44,17 @@ int solve(int S, int T) {
     memset(visited, 0, sizeof(visited));
     queue<pair<int,int>> q;
     q.push({ S, 0 });
-    visited[S] = true;
 
     while (!q.empty()) {
         int X = q.front().first;
         int depth = q.front().second;
+        visited[X] = true;
         q.pop();
 
         if (X == T) return depth;
 
         vector<int> next = generate(X);
         for (int Y : next) {
-            if (visited[Y] || !isPrime[Y] || Y < 1000) continue;
             q.push({ Y, depth+1 });
         }
     }
