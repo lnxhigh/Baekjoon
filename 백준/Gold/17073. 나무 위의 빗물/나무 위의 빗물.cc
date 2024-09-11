@@ -7,6 +7,7 @@ const int MAX = 1 << 19;
 vector<int> tree[MAX];
 
 int main() {
+    FastIO
     cin >> N >> W;
     for (int i = 0; i < N-1; i++) {
         int U, V;
