@@ -14,10 +14,10 @@ bool finish = false;
 int res = 0;
 
 void dfs(int x) {
-    int l = tree[x].L, r = tree[x].R;
-    if (l != -1) { res++; dfs(l); if (!finish) res++; }
-    if (r != -1) { res++; dfs(r); if (!finish) res++; }
+    if (tree[x].L != -1) { res++; dfs(tree[x].L); }
+    if (tree[x].R != -1) { res++; dfs(tree[x].R); }
     if (x == last) finish = true;
+    if (!finish) res++;
 }
 
 int main() {
@@ -32,7 +32,7 @@ int main() {
     while (tree[last].R != -1) {
         last = tree[last].R;
     }
-
+    
     dfs(S);
 
     cout << res << '\n';
