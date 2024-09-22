@@ -4,6 +4,8 @@ using namespace std;
 using int64 = long long;
 
 int main() {
+    FastIO
+    
     int N; cin >> N;
     vector<int64> A(N);
     for (int64 &x : A) cin >> x;
