@@ -1,4 +1,5 @@
 #include <bits/stdc++.h>
+#define FastIO cin.tie(0)->sync_with_stdio(0);
 #define X first
 #define Y second
 using namespace std;
@@ -8,6 +9,8 @@ int N;
 const int INF = 1 << 20;
 
 int main() {
+    FastIO
+    
     cin >> N;
     vector<Point> P(N);
     for (auto &[x,y] : P) { cin >> x >> y; }
