@@ -12,17 +12,19 @@
 
 ### 제출 일자
 
-2024년 8월 15일 09:48:49
+2024년 9월 24일 09:22:14
 
 ### 문제 설명
 
-<p>3×N 크기의 벽을 2×1, 1×2 크기의 타일로 채우는 경우의 수를 구해보자.</p>
+<p>In how many ways can you tile a 3xn rectangle with 2x1 dominoes?</p>
+
+<p>Here is a sample tiling of a 3x12 rectangle</p>
 
 ### 입력 
 
- <p>첫째 줄에 N(1 ≤ N ≤ 30)이 주어진다.</p>
+ <p>Input consists of a line containing an integer 0 ≤ n ≤ 30. </p>
 
 ### 출력 
 
- <p>첫째 줄에 경우의 수를 출력한다.</p>
+ <p>Output one integer number giving the number of possible tilings.</p>
 
