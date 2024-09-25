@@ -15,7 +15,8 @@ int64 power(int64 x, int64 p) {
 
 int main() {
     int64 N, M; cin >> N >> M;
-
+    M = min(M, N - M);
+    
     int64 res = 1, mul = 1;
     for (int64 i = 0; i < M; i++) {
         res = (res * (N - i)) % MOD;
