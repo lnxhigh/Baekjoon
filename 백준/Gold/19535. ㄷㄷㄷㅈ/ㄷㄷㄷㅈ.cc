@@ -27,6 +27,8 @@ int64 G(const vector<vector<int>> &tree, const int N) {
 }
 
 int main() {
+    FastIO
+    
     int N; cin >> N;
     vector<vector<int>> tree(N);
 
@@ -39,7 +41,7 @@ int main() {
 
     int64 d = D(tree, N);
     int64 g = G(tree, N);
-    
+
     string res = (d > 3*g) ? "D" : (d < 3*g) ? "G" : "DUDUDUNGA";
     cout << res << '\n';
     return 0;
