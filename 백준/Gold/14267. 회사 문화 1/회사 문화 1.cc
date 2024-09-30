@@ -16,6 +16,7 @@ void dfs(int parent) {
 }
 
 int main() {
+    FastIO
     int N, M; cin >> N >> M;
 
     int x; cin >> x;
