@@ -1,35 +1,35 @@
 #include <bits/stdc++.h>
-#define ll long long
+#define FastIO cin.tie(0)->sync_with_stdio(0);
 using namespace std;
+using int64 = long long;
 
-int N;
-const int N_MAX = 31;
-ll D[N_MAX][N_MAX<<1];
+const int MAX = 1 << 5;
+int64 D[MAX][MAX];
 
-ll solve(int F, int H) {
-    if (D[F][H] != -1) return D[F][H];
+// 한조각이 w 개, 반조각이 h 개 있을 때 서로 다른 문자열의 개수를 D[w][h] 라 하면
+// D[w][h] = D[w-1][h+1] + D[w][h-1] 
 
-    ll res = 0;
-    if (H == 0) res = solve(F-1, H+1);
-    else if (F == 0) res = solve(F, H-1);
-    else res = solve(F-1, H+1) + solve(F, H-1);
-
-    return D[F][H] = res;
-}
+// w == 0 일 때는 문자열은 hhh...h 로 한 가지밖에 없다
+// h == 0 일 때는 언제나 한 조각 전체가 선택되므로 D[w][h-1] 은 무시한다
 
 int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(NULL); cout.tie(NULL);
+    FastIO
 
+    for (int i = 0; i < MAX; i++) {
+        D[0][i] = 1;
+    }
+    
+    for (int w = 1; w < MAX; w++) {
+        D[w][0] = D[w-1][1];
+        for (int h = 1; h < MAX; h++) {
+            D[w][h] = D[w-1][h+1] + D[w][h-1];
+        }
+    }
+    
     while (true) {
-        int N;
-        cin >> N;
-        if (N == 0) break;
-
-        memset(D, -1, sizeof(D));
-        D[0][0] = 1;
-        ll res = solve(N, 0);
-        cout << res << '\n';
+        int N; cin >> N;
+        if (!N) break;
+        cout << D[N][0] << '\n';
     }
 
     return 0;

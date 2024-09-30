@@ -4,7 +4,7 @@
 
 ### 성능 요약
 
-메모리: 2036 KB, 시간: 0 ms
+메모리: 2028 KB, 시간: 0 ms
 
 ### 분류
 
@@ -12,25 +12,23 @@
 
 ### 제출 일자
 
-2024년 6월 20일 19:14:03
+2024년 9월 30일 17:34:59
 
 ### 문제 설명
 
-<p>70세 박종수 할아버지는 매일 매일 약 반알을 먹는다. 손녀 선영이는 종수 할아버지에게 약이 N개 담긴 병을 선물로 주었다.</p>
+<p>Aunt Lizzie takes half a pill of a certain medicine every day. She starts with a bottle that contains N pills.</p>
 
-<p>첫째 날에 종수는 병에서 약 하나를 꺼낸다. 그 다음, 그 약을 반으로 쪼개서 한 조각은 먹고, 다른 조각은 다시 병에 넣는다.</p>
+<p>On the first day, she removes a random pill, breaks it in two halves, takes one half and puts the other half back into the bottle.</p>
 
-<p>다음 날부터 종수는 병에서 약을 하나 꺼낸다. (약은 한 조각 전체 일 수도 있고, 쪼갠 반 조각 일 수도 있다) 반 조각이라면 그 약을 먹고, 아니라면 반을 쪼개서 한 조각을 먹고, 다른 조각은 다시 병에 넣는다.</p>
+<p>On subsequent days, she removes a random piece (which can be either a whole pill or half a pill) from the bottle. If it is half a pill, she takes it. If it is a whole pill, she takes one half and puts the other half back into the bottle.</p>
 
-<p>종수는 손녀에게 한 조각을 꺼낸 날에는 W를, 반 조각을 꺼낸 날에는 H 보낸다. 손녀는 할아버지에게 받은 문자를 종이에 기록해 놓는다. 총 2N일이 지나면 길이가 2N인 문자열이 만들어지게 된다. 이때, 가능한 서로 다른 문자열의 개수는 총 몇 개일까?</p>
+<p>In how many ways can she empty the bottle? We represent the sequence of pills removed from the bottle in the course of 2N days as a string, where the i-th character is W if a whole pill was chosen on the i-th day, and H if a half pill was chosen (0 <= i < 2N). How many different valid strings are there that empty the bottle?</p>
 
 ### 입력 
 
- <p>입력은 최대 1000개의 테스트 케이스로 이루어져 있다. 각 테스트 케이스는 한 줄이며, 병에 들어있는 약의 개수 N ≤ 30 가 주어진다.</p>
-
-<p>입력의 마지막 줄에는 0이 하나 주어진다.</p>
+ <p>The input will contain data for at most 1000 problem instances. For each problem instance there will be one line of input: a positive integer N <= 30, the number of pills initially in the bottle. End of input will be indicated by 0.</p>
 
 ### 출력 
 
- <p>각 테스트 케이스에 대해서 가능한 문자열의 개수를 출력한다.</p>
+ <p>For each problem instance, the output will be a single number, displayed at the beginning of a new line. It will be the number of different ways the bottle can be emptied.</p>
 
