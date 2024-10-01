@@ -1,19 +1,47 @@
 #include <iostream>
-#define N_MAX 1001
-#define K 10007
 using namespace std;
+const int MOD = 10007;
 
-int N;
-int dp[N_MAX];
+int n, twos, tmp, cnt = 0;
 
-int main() {
-    cin >> N;
-    dp[0] = 0; dp[1] = 1; dp[2] = 3;
-    for (int i = 3; i <= N; i++) {
-        dp[i] = dp[i-1] + 2*dp[i-2];
-        dp[i] %= K;
+int power(int x, int p) 
+{
+    int ans = 1;
+    while (p) 
+    {
+        if (p & 1) ans = (ans * x) % MOD;
+        x = (x * x) % MOD;
+        p >>= 1;
     }
 
-    cout << dp[N] << '\n';
-    return 0;
+    return ans;
+}
+
+int combi(int n, int k) 
+{
+    int ans = 1, mul = 1;
+    k = min(k, n - k);
+
+    for (int i = 0; i < k; i++) 
+    {
+        ans = ans * (n - i) % MOD;
+        mul = mul * (i + 1) % MOD;
+    }
+
+    int inv = power(mul, MOD - 2);
+    return ans * inv % MOD;
+}
+
+int main(void)
+{
+	cin >> n;
+	twos = n / 2;
+
+	for (int i = 0; i <= twos; i++)
+	{
+		tmp = combi(n-i, i) * power(2, i) % MOD;
+		cnt += tmp;
+	}
+    cout << cnt % MOD << '\n';
+	return 0;
 }
