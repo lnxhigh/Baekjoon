@@ -10,21 +10,17 @@ int solve(const vector<int> &A, int N) {
     int ans = 0;
     int l = 0, r = 1;
     fruits[A[l]]++, fruits[A[r]]++;
+    int cnt = (A[l] == A[r]) ? 1 : 2;
 
     while (l != N - 1 || r != N - 1) {
-        int cnt = 0;
-        for (int i = 1; i <= 9; i++) {
-            if (fruits[i]) cnt++;
-        }
-        
         if (cnt < 3) ans = max(ans, r - l + 1);
 
         if (cnt < 3 && r != N - 1) {
             r++;
-            fruits[A[r]]++;
+            if (fruits[A[r]]++ == 0) cnt++;
         }
         else if (l != N - 1) {
-            fruits[A[l]]--;
+            if (--fruits[A[l]] == 0) cnt--;
             l++;
         }
     }
