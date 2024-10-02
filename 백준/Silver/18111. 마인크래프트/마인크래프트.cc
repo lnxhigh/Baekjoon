@@ -1,10 +1,13 @@
 #include <bits/stdc++.h>
+#define FastIO cin.tie(0)->sync_with_stdio(0);
 using namespace std;
 const int MAX = 500;
 
 int H[MAX][MAX];
 
 int main() {
+    FastIO
+    
     int R, C; cin >> R >> C;
     int B; cin >> B;
 
