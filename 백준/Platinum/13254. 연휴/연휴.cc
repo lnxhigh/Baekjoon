@@ -3,46 +3,38 @@
 using namespace std;
 const int MAX = 1 << 6;
 int N, M; 
-vector<set<int>> tree;
-vector<set<int>> newTree; // copy
+vector<int> tree[MAX];
 multiset<int> family;
 
-pair<int,int> dfs(int cur, vector<bool> &visit) {
-    int total = 1;
-    int cnt = family.count(cur);
+// D[k]: 자신의 parent 로 가는 간선을 제거했을 때
+// 그 그룹에 속한 도시와 가족의 수를 저장
 
-    visit[cur] = true;
+pair<int,int> D[MAX];
+bool visited[MAX];
+
+pair<int,int> dfs(int cur) {
+    int tot = 1; // 도시의 수
+    int cnt = family.count(cur); // 가족의 수
+    visited[cur] = true;
     
-    for (int next : newTree[cur]) {
-        if (visit[next]) continue;
-        auto [ total_, cnt_ ] = dfs(next, visit);
-        
-        total += total_;
-        cnt += cnt_;
+    for (int next : tree[cur]) {
+        if (visited[next]) continue;
+        auto [ x, y ] = dfs(next);
+        tot += x; cnt += y;
     }
 
-    return { total, cnt };
+    return D[cur] = { tot, cnt };
 }
 
 int main() {
-
-    // Input
-    
     FastIO
     cout << setprecision(16);
-
     cin >> N >> M;
-    tree.resize(N);
-    newTree.resize(N);
 
     for (int i = 0; i < N - 1; i++) {
         int x, y; cin >> x >> y;
-
-        tree[x].insert(y);
-        tree[y].insert(x);
-        
-        newTree[x].insert(y);
-        newTree[y].insert(x);
+        tree[x].push_back(y);
+        tree[y].push_back(x);
     }
 
     for (int i = 0; i < M; i++) {
@@ -50,27 +42,17 @@ int main() {
         family.insert(x);
     }
 
-    // Count
+    dfs(0);
 
     double res = 0;
-    for (int cur = 0; cur < N; cur++) {
-        for (int next : tree[cur]) {
-            if (cur > next) continue;
-            
-            vector<bool> visit(N);
-            
-            newTree[next].erase(cur);
-            newTree[cur].erase(next);
-            
-            auto [ x, a ] = dfs(cur, visit);
-            auto [ y, b ] = dfs(next, visit);
 
-            newTree[cur].insert(next);
-            newTree[next].insert(cur);
+    for (int i = 1; i < N; i++) {
+        auto [ x, a ] = D[i];
+        int y = N - x, b = M - a;
 
-            double p = a * log(y) + b * log(x) - M * log(N - 1);
-            res += exp(p);
-        }
+        // 중복순열
+        double p = a * log(y) + b * log(x) - M * log(N - 1);
+        res += exp(p);
     }
 
     cout << res << '\n';
