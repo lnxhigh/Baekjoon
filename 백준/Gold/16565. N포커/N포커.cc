@@ -1,31 +1,22 @@
 #include <bits/stdc++.h>
 using namespace std;
+using int64 = long long;
 const int MOD = 10007;
 
 // D[N][K]: N개의 포카드 묶음 중 K장을 뽑았을 때
 // 최소 하나 이상의 포카드를 만드는 경우의 수
 int D[13 + 1][52 + 1];
 
-int power(int x, int p) {
-    int y = 1;
-    while (p) {
-        if (p & 1) y = (y * x) % MOD;
-        x = (x * x) % MOD;
-        p >>= 1;
-    }
-    return y;
-}
-
 int choose(int n, int k) {
-    int res = 1, mul = 1;
+    int64 x = 1;
     k = min(k, n - k);
-    for (int i = 0; i < k; i++) {
-        res = res * (n - i) % MOD;
-        mul = mul * (i + 1) % MOD;
-    }
 
-    int inv = power(mul, MOD - 2);
-    return res * inv % MOD;
+    for (int64 i = 0; i < (int64) k; i++) {
+        x *= n - i; 
+        x /= i + 1;
+    }
+    
+    return x % MOD;
 }
 
 int main() {
