@@ -3,33 +3,16 @@
 using namespace std;
 using int64 = long long;
 
-int64 lcm(const vector<int64> &v) {
-    int64 x = 1;
-    for (int64 k : v) x = lcm(x, k);
-    return x;
-}
-
 int main() {
+    FastIO
     int T; cin >> T;
     while (T--) {
-        int64 N; cin >> N;
-        vector<vector<int64>> all = {
-            { N, N - 1, N - 2 },
-            { N, N - 1, N - 3 },
-            { N, N - 1, N - 4 },
-            { N, N - 2, N - 3 },
-            { N - 1, N - 2, N - 3 },
-        };
-
-        int64 X = 0;
-        for (const vector<int64> &xyz : all) {
-            if (xyz.back() > 0) {
-                X = max(X, lcm(xyz));
-            }
-        }
-
+        int64 N, X; cin >> N;
+        if      (N % 2) X = N * (N - 1) * (N - 2);
+        else if (N % 3) X = N * (N - 1) * (N - 3);
+        else            X = (N - 1) * (N - 2) * (N - 3);
         cout << X << '\n';
     }
-    
+
     return 0;
 }
