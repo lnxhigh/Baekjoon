@@ -1,10 +1,7 @@
 #include <bits/stdc++.h>
 using namespace std;
 const int INF = 1 << 20;
-
 char Map[5][5];
-int dx[3] = { -2, -1, 0 };
-int dy[3] = { 0, -1, -2 };
 
 int f(int x, int y, char op) {
     if (op == '+') return x + y;
@@ -14,29 +11,22 @@ int f(int x, int y, char op) {
 }
 
 int dfs(int x, int y, bool flag) {
+    if (x < 0 || y < 0) return flag ? -INF : INF;
     int k = Map[x][y] - '0';
     if (x == 0 && y == 0) return k;
 
-    int ret = flag ? -INF : INF;
-    for (int i = 0; i < 3; i++) {
-        int nx = x + dx[i];
-        int ny = y + dy[i];
-        if (nx < 0 || ny < 0) continue;
-
-        int value = dfs(nx, ny, flag);
-
-        if (dx[i] == -1 && dy[i] == -1) {
-            int first  = f(value, k, Map[x - 1][y]);
-            int second = f(value, k, Map[x][y - 1]);
-            ret = flag ? max(ret, max(first, second)) : min(ret, min(first, second));
-        }
-        else {
-            int tmp = f(value, k, Map[(x + nx)/2][(y + ny)/2]);
-            ret = flag ? max(ret, tmp) : min(ret, tmp);
-        }
+    int first  = dfs(x - 1, y, flag);
+    int second = dfs(x, y - 1, flag);
+    
+    if (isdigit(Map[x][y])) {
+        first  = f(first , k, Map[x - 1][y]);
+        second = f(second, k, Map[x][y - 1]);
     }
 
-    return ret;
+    if (x == 0) return second;
+    if (y == 0) return first;
+
+    return flag ? max(first, second) : min(first, second);;
 }
 
 int main() {
