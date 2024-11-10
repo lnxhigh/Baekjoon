@@ -4,7 +4,7 @@
 
 ### 성능 요약
 
-메모리: 6548 KB, 시간: 76 ms
+메모리: 6488 KB, 시간: 60 ms
 
 ### 분류
 
@@ -12,21 +12,29 @@
 
 ### 제출 일자
 
-2024년 8월 13일 01:17:02
+2024년 11월 10일 23:41:45
 
 ### 문제 설명
 
-<p>창영이는 강산이의 비밀번호를 훔치기 위해서 강산이가 사용하는 컴퓨터에 키로거를 설치했다. 며칠을 기다린 끝에 창영이는 강산이가 비밀번호 창에 입력하는 글자를 얻어냈다.</p>
-
-<p>키로거는 사용자가 키보드를 누른 명령을 모두 기록한다. 따라서, 강산이가 비밀번호를 입력할 때, 화살표나 백스페이스를 입력해도 정확한 비밀번호를 알아낼 수 있다. </p>
-
-<p>강산이가 비밀번호 창에서 입력한 키가 주어졌을 때, 강산이의 비밀번호를 알아내는 프로그램을 작성하시오. 강산이는 키보드로 입력한 키는 알파벳 대문자, 소문자, 숫자, 백스페이스, 화살표이다.</p>
+<p>As a malicious hacker you are trying to steal your mother’s password, and therefore you have installed a keylogger on her PC (or Mac, so you like). You have a log from your mother typing the password, but unfortunately the password is not directly visible because she used the left and right arrows to change the position of the cursor, and the backspace to delete some characters. Write a program that can decode the password from the given keylog.</p>
 
 ### 입력 
 
- <p>첫째 줄에 테스트 케이스의 개수가 주어진다. 각 테스트 케이스는 한줄로 이루어져 있고, 강산이가 입력한 순서대로 길이가 L인 문자열이 주어진다. (1 ≤ L ≤ 1,000,000) 강산이가 백스페이스를 입력했다면, '-'가 주어진다. 이때 커서의 바로 앞에 글자가 존재한다면, 그 글자를 지운다. 화살표의 입력은 '<'와 '>'로 주어진다. 이때는 커서의 위치를 움직일 수 있다면, 왼쪽 또는 오른쪽으로 1만큼 움직인다. 나머지 문자는 비밀번호의 일부이다. 물론, 나중에 백스페이스를 통해서 지울 수는 있다. 만약 커서의 위치가 줄의 마지막이 아니라면, 커서 및 커서 오른쪽에 있는 모든 문자는 오른쪽으로 한 칸 이동한다.</p>
+ <p>The ﬁrst line of the input contains a single number: the number of test cases to follow. Each test case has the following format:</p>
+
+<ul>
+	<li>One line with a string L, satisfying 1 ≤ Length(L) ≤ 1,000,000, consisting of:
+	<ul>
+		<li>’-’ representing backspace: the character directly before the cursor position is deleted, if there is any.</li>
+		<li>’<’ (and ’>’) representing the left (right) arrow: the cursor is moved 1 character to the left (right), if possible.</li>
+		<li>alphanumeric characters, which are part of the password, unless deleted later. We assume ‘insert mode’: if the cursor is not at the end of the line, and you type an alphanumeric character, then all characters after the cursor move one position to the right.</li>
+	</ul>
+	</li>
+</ul>
+
+<p>Every decoded password will be of length > 0.</p>
 
 ### 출력 
 
- <p>각 테스트 케이스에 대해서, 강산이의 비밀번호를 출력한다. 비밀번호의 길이는 항상 0보다 크다.</p>
+ <p>For every test case in the input, the output should contain a single string, on a single line: the decoded password.</p>
 

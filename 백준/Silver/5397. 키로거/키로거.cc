@@ -1,55 +1,52 @@
 #include <bits/stdc++.h>
+#define FastIO cin.tie(0)->sync_with_stdio(0);
 using namespace std;
 
-int TC;
-string keyLog;
-
-string hack(string keyLog) {
-    string password = "";
-    stack<char> left;
-    stack<char> right;
+string solve(const string &S) {
+    string ret;
+    stack<char> l, r;
     
-    for (char c : keyLog) {
-        if (isalpha(c) || isdigit(c)) {
-            left.push(c);
+    for (char c : S) {
+        if (c == '-') {
+            if (!l.empty()) {
+                l.pop();
+            }
         }
         else if (c == '<') {
-            if (left.empty()) continue;
-            right.push(left.top());
-            left.pop();
+            if (!l.empty()) {
+                r.push(l.top());
+                l.pop();
+            }
         }
         else if (c == '>') {
-            if (right.empty()) continue;
-            left.push(right.top());
-            right.pop();
+            if (!r.empty()) {
+                l.push(r.top());
+                r.pop();
+            }
         }
-        else if (c == '-') {
-            if (!left.empty()) left.pop();
+        else {
+            l.push(c);
         }
     }
-
-    while (!left.empty()) {
-        right.push(left.top());
-        left.pop();
+    
+    while (!l.empty()) {
+        r.push(l.top());
+        l.pop();
     }
-    while (!right.empty()) {
-        password += right.top();
-        right.pop();
+    while (!r.empty()) {
+        ret.push_back(r.top());
+        r.pop();
     }
-
-    return password;
+    
+    return ret;
 }
 
 int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(NULL); cout.tie(NULL);
-    
-    cin >> TC;
-    while (TC--) {
-        cin >> keyLog;
-        string password = hack(keyLog);
-        cout << password << '\n';
+    FastIO
+    int T; cin >> T;
+    while (T--) {
+        string S; cin >> S;
+        cout << solve(S) << '\n';
     }
-
     return 0;
 }
