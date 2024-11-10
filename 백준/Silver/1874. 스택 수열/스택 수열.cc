@@ -1,30 +1,51 @@
 #include <bits/stdc++.h>
+#define FastIO cin.tie(0)->sync_with_stdio(0);
 using namespace std;
 
 int N;
-const int MAX = 1 << 17;
-int X[MAX];
+vector<int> A;
 
-stack<int> st;
-vector<char> res;
-bool isImpossible = false;
+pair<bool,string> solve() {
+    stack<int> st;
+    string ret;
+    int k = 0, i = 1;
 
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(NULL); cout.tie(NULL);
-    cin >> N;
-    for (int i = 1; i <= N; i++) { cin >> X[i]; }
+    while (true) {
+        if (!st.empty() && st.top() == A[k]) {
+            k++;
+            st.pop();
+            ret.push_back('-');
+        }
 
-    int cur = 1;
-    for (int i = 1; i <= N; i++) {
-        for (int k = cur; k <= X[i]; k++) { st.push(k); res.push_back('+'); }
-        if (st.top() != X[i]) { isImpossible = true; break; }
-        st.pop(); res.push_back('-');
-        cur = max(cur, X[i] + 1);
+        if (k >= N) break;
+
+        if (st.empty() || st.top() < A[k]) {
+            st.push(i++);
+            ret.push_back('+');
+        }
+        else if (st.top() > A[k]) {
+            st.pop();
+            if (st.empty() || st.top() != A[k]) {
+                return { false, ret };
+            }
+        }
     }
 
-    if (isImpossible) cout << "NO" << '\n';
-    else { for (char c : res) cout << c << '\n'; }
+    return { true, ret };
+}
 
+int main() {
+    FastIO
+    cin >> N;
+    A.resize(N);
+    for (int &X : A) cin >> X;
+    
+    auto [flag, op] = solve();
+    if (flag) {
+        for (char c : op) cout << c << '\n';
+    }
+    else {
+        cout << "NO" << '\n';
+    }
     return 0;
 }
