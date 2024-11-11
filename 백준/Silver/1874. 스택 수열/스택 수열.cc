@@ -3,49 +3,42 @@
 using namespace std;
 
 int N;
-vector<int> A;
+int A[100000];
 
-pair<bool,string> solve() {
-    stack<int> st;
+pair<string,bool> solve() {
     string ret;
-    int k = 0, i = 1;
+    
+    stack<int> st;
+    int num_to_push = 1;
 
-    while (true) {
-        if (!st.empty() && st.top() == A[k]) {
-            k++;
-            st.pop();
-            ret.push_back('-');
-        }
-
-        if (k >= N) break;
-
-        if (st.empty() || st.top() < A[k]) {
-            st.push(i++);
-            ret.push_back('+');
-        }
-        else if (st.top() > A[k]) {
-            st.pop();
-            if (st.empty() || st.top() != A[k]) {
-                return { false, ret };
+    for (int i = 0; i < N; i++) { 
+        if (st.empty() || A[i] > st.top()) {   
+            while (st.empty() || A[i] > st.top()) {
+                st.push(num_to_push++);
+                ret.push_back('+');
             }
         }
+
+        if (st.top() != A[i]) {
+            return { ret, false };
+        }
+
+        st.pop();
+        ret.push_back('-');
     }
 
-    return { true, ret };
+    return { ret, true };
 }
 
 int main() {
     FastIO
     cin >> N;
-    A.resize(N);
-    for (int &X : A) cin >> X;
-    
-    auto [flag, op] = solve();
-    if (flag) {
-        for (char c : op) cout << c << '\n';
+    for (int i = 0; i < N; i++) {
+        cin >> A[i];
     }
-    else {
-        cout << "NO" << '\n';
-    }
+
+    auto [ result, flag ] = solve();
+    if (!flag) cout << "NO" << "\n";
+    else for (char c : result) cout << c << "\n";
     return 0;
 }
