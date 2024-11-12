@@ -3,91 +3,44 @@ using namespace std;
 
 int N, M, H;
 bool X[32][12];
-bool Y[32][12];
-vector<pair<int,int>> init;
+bool finish = false;
+int ans = 4;
 
-int go(int k, bool T[32][12]) {
-    int x = k;
-    for (int i = 1; i <= H; i++) {
-        if (T[i][x-1]) x--;
-        else if (T[i][x]) x++;
-    }
-    return x;
-}
-
-bool check(bool T[32][12]) {
+bool check() {
     for (int k = 1; k <= N; k++) {
-        if (go(k, T) != k) return false;
+        int t = k;
+        for (int i = 1; i <= H; i++) {
+            if (X[i][t-1]) t--;
+            else if (X[i][t]) t++;
+        }
+        if (t != k) return false;
     }
+
     return true;
 }
 
-vector<vector<int>> choose(int n, int k) {
-    vector<int> all(n);
-    iota(all.begin(), all.end(), 0);
-
-    vector<vector<int>> ret;
-    if (n < k) return ret;
-
-    vector<int> bin(n);
-    for (int i = 0; i < k; i++) bin[i] = 1;
-
-    do {
-        vector<int> sel;
-        for (int i = 0; i < n; i++) {
-            if (bin[i]) sel.push_back(all[i]);
+void dfs(int x, int y, int depth, int cnt) {
+    if (depth == cnt) {
+        if (check()) {
+            finish = true;
+            ans = min(ans, cnt);
         }
-        ret.push_back(sel);
-    } while (prev_permutation(bin.begin(), bin.end()));
-
-    return ret;
-}
-
-int solve() {
-    if (check(X)) return 0;
-    
-    vector<pair<int,int>> all;
-    for (int row = 1; row <= H; row++) {
-        for (int col = 1; col <= N - 1; col++) {
-            all.push_back({ row, col });
-        }
+        return;
     }
 
-    for (int k = 1; k <= 3; k++) {
-        auto selections = choose((int) all.size(), k);
-        for (auto &sel : selections) {
+    for (int i = x; i <= H; i++) {
+        if (finish) return;
+        int s = (x == i) ? y : 0;
 
-            // check if duplicated
-            bool duplicated = false;
-            for (int i : sel) {
-                auto [a, b] = all[i];
-                if (X[a][b]) { duplicated = true; break; }
-            }
-            if (duplicated) continue;
+        for (int k = s; k < N; k++) {
+            if (finish) return;
+            if (X[i][k - 1] || X[i][k] || X[i][k + 1]) continue;
 
-            // check if valid
-            memset(Y, 0, sizeof(Y));
-            for (auto [a, b] : init) {
-                Y[a][b] = true;
-            }
-
-            bool valid = true;
-            for (int i : sel) {
-                auto [a, b] = all[i];
-                if (Y[a][b-1]) { valid = false; break; }
-                Y[a][b] = true;
-            }
-            if (!valid) continue;
-
-            // check i -> i
-            if (!check(Y)) continue;
-
-            // return minimum
-            return k;
+            X[i][k] = true;
+            dfs(i, k + 2, depth + 1, cnt);
+            X[i][k] = false;
         }
     }
-
-    return -1;
 }
 
 int main() {
@@ -95,10 +48,10 @@ int main() {
     for (int i = 0; i < M; i++) {
         int a, b; cin >> a >> b;
         X[a][b] = true;
-        init.push_back({ a, b });
     }
 
-    int ans = solve();
+    for (int i = 0; i < 4; i++) dfs(0, 0, 0, i);
+    if (ans >= 4) ans = -1;
     cout << ans << '\n';
     return 0;
 }
