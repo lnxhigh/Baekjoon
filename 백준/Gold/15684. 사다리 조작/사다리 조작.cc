@@ -28,17 +28,26 @@ void dfs(int x, int y, int depth, int cnt) {
         return;
     }
 
-    for (int i = x; i <= H; i++) {
+    // (x, y) 에서 탐색을 시작
+    for (int k = y; k < N; k++) {
         if (finish) return;
-        int s = (x == i) ? y : 0;
+        int s = (k == y) ? x : 0;
 
-        for (int k = s; k < N; k++) {
+        for (int i = s; i <= H; i++) {
             if (finish) return;
+
+            // 가로선을 놓을 수 있는지 검사한다
             if (X[i][k - 1] || X[i][k] || X[i][k + 1]) continue;
 
             X[i][k] = true;
-            dfs(i, k + 2, depth + 1, cnt);
+            dfs(i + 1, k, depth + 1, cnt);
             X[i][k] = false;
+
+            // 
+            // while (i <= H) {
+            //     if (X[i][k - 1] || X[i][k + 1]) break;
+            //     i++;
+            // }
         }
     }
 }
@@ -50,7 +59,7 @@ int main() {
         X[a][b] = true;
     }
 
-    for (int i = 0; i < 4; i++) dfs(0, 0, 0, i);
+    for (int i = 0; i < 4; i++) dfs(1, 1, 0, i);
     if (ans >= 4) ans = -1;
     cout << ans << '\n';
     return 0;
