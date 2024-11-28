@@ -1,50 +1,72 @@
 #include <bits/stdc++.h>
+#define FastIO cin.tie(0)->sync_with_stdio(0);
 using namespace std;
+const int MAX = 1 << 10;
 
 int R, C;
-const int MAX = 1001;
+char A[MAX][MAX];
 
-bool Array[MAX][MAX];
 int D[MAX][MAX];
+pair<int,int> L[MAX][MAX];
+
+void input() {
+    cin >> R >> C;
+    for (int i = 0; i < R; i++) {
+        for (int j = 0; j < C; j++) {
+            cin >> A[i][j];
+        }
+    }
+}
+
+void init() {
+    memset(D, -1, sizeof(D));
+
+    for (int col = 0; col < C; col++) {
+        for (int row = R - 1; row >= 0; row--) {
+            int x = (A[row][col] == '1');
+            if (x == 0) continue;
+            else L[row][col].first = L[row + 1][col].first + x;
+        }
+    }
+
+    for (int row = 0; row < R; row++) {
+        for (int col = C - 1; col >= 0; col--) {
+            int x = (A[row][col] == '1');
+            if (x == 0) continue;
+            else L[row][col].second = L[row][col + 1].second + x;
+        }
+    }
+}
+
+int dfs(int x, int y) {
+    if (x >= R || y >= C) return 0;
+    if (D[x][y] != -1) return D[x][y];
+    else if (A[x][y] == '0') return D[x][y] = 0;
+
+    auto [h, w] = L[x][y];
+    int len = min(h, w);
+    int sq = dfs(x + 1, y + 1) + 1;
+    return D[x][y] = min(len, sq);   
+}
+
+int solve() {
+    int len = 0;
+    for (int i = 0; i < R; i++) {
+        for (int j = 0; j < C; j++) {
+            len = max(len, dfs(i, j));
+        }
+    }
+
+    int area = len * len;
+    return area;
+}
 
 int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(NULL); cout.tie(NULL);
-    cin >> R >> C;
-
-    for (int i = 1; i <= R; i++) {
-        for (int j = 1; j <= C; j++) {
-            char letter;
-            cin >> letter;
-            Array[i][j] =  (letter == '1');
-        }
-    }
-
-    for (int i = 1; i <= R; i++) {
-        for (int j = 1; j <= C; j++) {
-            int r = D[i-1][j-1];
-            
-            int cnt = 0;
-            for (int k = 0; k <= r; k++) {
-                if (!Array[i-k][j] || !Array[i][j-k]) {
-                    break;
-                }
-                cnt++;
-            }
-
-            D[i][j] = cnt;
-        }
-    }
-
-    int res = 0;
-    for (int i = 1; i <= R; i++) {
-        for (int j = 1; j <= C; j++) {
-            res = max(res, D[i][j]);
-        }
-    }
-
-    int area = res * res;
-    cout << area << '\n';
+    FastIO
+    input();
+    init();
     
+    int area = solve();
+    cout << area << '\n';
     return 0;
 }
