@@ -1,38 +1,35 @@
 #include <bits/stdc++.h>
+#define FastIO cin.tie(0)->sync_with_stdio(0);
 using namespace std;
-
-int N, M;
 int A[11][100001];
-int D[11][100001];
-
-int dfs(int k, int day) {
-    if (D[k][day] != -1) return D[k][day];
-    else if (day == 0) return A[k][day];
-
-    int ret = 0;
-    for (int i = 0; i < M; i++) {
-        int value = A[k][day];
-        if (i == k) value /= 2;
-        ret = max(ret, dfs(i, day - 1) + value);
-    }
-
-    return D[k][day] = ret;
-}
 
 int main() {
-    cin >> N >> M;
-    memset(D, -1, sizeof(D));
-    for (int i = 0; i < M; i++) {
-        for (int day = 0; day < N; day++) {
+    FastIO
+    int N, M; cin >> N >> M;
+    for (int i = 0; i < M; i++) 
+        for (int day = 0; day < N; day++) 
             cin >> A[i][day];
-        }
+
+    vector<int> D(M);
+    for (int i = 0; i < M; i++) {
+        D[i] = A[i][0];
     }
     
+    for (int day = 1; day < N; day++) {
+        vector<int> P = D;
+        for (int i = 0; i < M; i++) {
+            int add = A[i][day];
+            for (int k = 0; k < M; k++) {
+                if (k != i) D[i] = max(D[i], P[k] + add);
+                else D[i] = max(D[i], P[k] + (add >> 1));
+            }
+        }
+    }
+
     int ans = 0;
     for (int i = 0; i < M; i++) {
-        ans = max(ans, dfs(i, N - 1));
+        ans = max(ans, D[i]);
     }
     cout << ans << '\n';
-
     return 0;
 }
