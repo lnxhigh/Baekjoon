@@ -21,18 +21,15 @@ int main() {
     mid = (mid + 1) / 2;
     sort(X, X + N);
 
-    int64 ans = 0;
     int64 sum = 0;
+    int64 idx = 0;
 
-    for (int64 i = 0; i < N; i++) {
-        const auto& [loc, cnt] = X[i];
+    while (sum < mid) {
+        const auto& [loc, cnt] = X[idx++];
         sum += cnt;
-        if (sum < mid) continue;
-
-        ans = loc;
-        break;
     }
-
+    
+    auto [ans, _] = X[--idx];
     cout << ans << '\n';
     return 0;
 }
