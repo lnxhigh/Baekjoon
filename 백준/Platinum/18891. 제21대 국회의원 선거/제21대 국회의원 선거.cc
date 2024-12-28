@@ -41,41 +41,38 @@ void init() {
     }
 }
 
-void solve() {
+// 전국단위 준연동 방식으로 각 정당별 연동배분의석수 산정
+void first() {
     // N: 국회의원 정수
     int n = 300;
     
     // R: 의석할당정당이 아닌 정당의 지역구 당선인 수 총합 + 무소속 지역구 당선인 수
-    int r = 0;
+    int r = 253;
     for (int i = 0; i < N; i++) {
-        if (!P[i].alloc) r += P[i].r;
+        if (P[i].alloc) r -= P[i].r;
     }
     
-    int none = 253;
-    for (int i = 0; i < N; i++) {
-        none -= P[i].r;
-    }
-    r += none;
-
     // p: 해당 정당의 비례대표국회의원선거 득표비율
     int sum = 0;
     for (int i = 0; i < N; i++) {
         if (P[i].alloc) sum += P[i].vote;
     }
 
-    // 전국단위 준연동 방식으로 각 정당별 연동배분의석수 산정
+    for (int i = 0; i < N; i++) {
+        P[i].p = (double) P[i].vote / (double) sum;
+    }
+
+    // 각 정당별 연동배분의석수 산정
     for (int i = 0; i < N; i++) {
         if (!P[i].alloc) continue;
         
-        double p = (double) P[i].vote / (double) sum;
-        P[i].p = p;
-        
-        double x = ((double) (n - r) * p - (double) P[i].r) / 2.0;
-        int s = (x >= 1) ? round(x) : 0;
-        P[i].s = s;
+        double x = ((double) (n - r) * P[i].p - (double) P[i].r) / 2.0;
+        P[i].s = (x >= 1) ? round(x) : 0;
     }
+}
 
-    // 비례대표 의석 조정
+// 비례대표 의석 조정
+void second() {
     int seats = 0;
     for (int i = 0; i < N; i++) {
         seats += P[i].s;
@@ -127,8 +124,10 @@ void solve() {
             }
         }
     }
+}
 
-    // 17석에 대해 기존 의석배분방식 적용 배분
+// 17석에 대해 기존 의석배분방식 적용 배분
+void third() {
     int cnt = 0;
     vector<pair<double,int>> tmp;
 
@@ -152,8 +151,10 @@ void solve() {
             P[idx].t++;
         }
     }
+}
 
-    // 결과 출력
+// 결과 출력
+void print() {
     vector<pair<int,string>> result;
     for (int i = 0; i < N; i++) {
         int seats = P[i].r + P[i].s + P[i].t;
@@ -171,6 +172,7 @@ int main() {
     FastIO
     input();
     init();
-    solve();
+    first(); second(); third();
+    print();
     return 0;
 }
