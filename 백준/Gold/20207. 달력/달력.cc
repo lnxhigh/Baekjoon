@@ -1,41 +1,16 @@
 #include <bits/stdc++.h>
-#define FastIO cin.tie(0)->sync_with_stdio(0);
 using namespace std;
-const int MAX = 1024;
 
-// Input
 int N;
-pair<int,int> X[MAX];
+int D[369];
 
-// Calendar
-bool A[MAX][369];
-int D[MAX];
-
-void input() { 
+int main() {
     cin >> N;
     for (int i = 0; i < N; i++) {
         int S, E; cin >> S >> E;
-        int len = E - S + 1;
-        X[i] = { S, -len };
+        for (int day = S; day <= E; day++) D[day]++;
     }
-    sort(X, X + N);
-}
 
-void write() {
-    for (int i = 0; i < N; i++) {
-        auto [S, len] = X[i];
-        len = -len;
-
-        int r = 0;
-        while (A[r][S]) r++;
-        for (int c = S; c < S + len; c++) {
-            A[r][c] = true;
-            D[c] = max(D[c], r + 1);
-        }
-    }
-}
-
-int solve() {
     int area = 0;
     stack<int> st;
 
@@ -50,14 +25,6 @@ int solve() {
         }
     }
 
-    return area;
-}
-
-int main() {
-    FastIO
-    input();
-    write();
-    int ans = solve();
-    cout << ans << '\n';
+    cout << area << '\n';
     return 0;
 }
