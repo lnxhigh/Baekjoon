@@ -7,11 +7,10 @@ int solve() {
     int AB, BC, CA; cin >> AB >> BC >> CA;
 
     int ans = 0;
-    for (int y = 0; y <= C; y++) {
-        for (int z = 0; z <= C; z++) {
-            if (y + z > C) continue;
+    for (int y = 0; y <= min(B, C); y++) {
+        for (int z = 0; z <= min(A, C); z++) {
+            if (y + z > C) break;
             int x = min(A - z, B - y);
-            if (x < 0) continue;
 
             int cost = AB * x + BC * y + CA * z;
             ans = max(ans, cost);
