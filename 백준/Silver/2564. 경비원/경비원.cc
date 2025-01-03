@@ -23,8 +23,8 @@ int main() {
     int ans = 0;
     for (int i = 0; i < N; i++) {
         int dist = 1 << 20;
-        
-        for (int k = -2; k <= 2; k++) {
+
+        for (int k : { -1, 0, +1 }) {
             int x = A[N] + k * 2 * (H + W);
             dist = min(dist, abs(x - A[i]));
         }
