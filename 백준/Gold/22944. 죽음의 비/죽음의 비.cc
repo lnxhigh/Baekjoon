@@ -4,11 +4,13 @@ using namespace std;
 const int MAX = 1 << 9;
 const int INF = 1 << 20;
 
-int N, H, D, K;
+int N, H, D;
 char A[MAX][MAX];
-
 pair<int,int> S, E;
-pair<int,int> U[16];
+
+int V[MAX][MAX];
+int dx[4] = { -1, 0, +1, 0 };
+int dy[4] = { 0, -1, 0, +1 };
 
 void input() {
     cin >> N >> H >> D;
@@ -19,48 +21,37 @@ void input() {
 
             if (c == 'S') S = { i, j };
             else if (c == 'E') E = { i, j };
-            else if (c == 'U') U[K++] = { i, j };
         }
     }
-
-    U[K] = E;
 }
 
 int solve() {
     int ret = INF;
+    auto [x, y] = S;
+    memset(V, -1, sizeof(V));
 
-    for (int i = 0; i < (1 << K); i++) {
-        vector<int> X; X.reserve(K + 1);
-        for (int k = 0; k < K; k++) {
-            if (i >> k & 1) X.push_back(k);
+    queue<tuple<int,int,int,int,int>> q;
+    q.push({ x, y, H, 0, 0 });
+    V[x][y] = H;
+    
+    while (!q.empty()) {
+        auto [x, y, h, d, cnt] = q.front();
+        q.pop();
+
+        if (A[x][y] == 'E') ret = min(ret, cnt);
+        if (h == 0) continue;
+
+        for (int i = 0; i < 4; i++) {
+            int nx = x + dx[i], ny = y + dy[i];
+            if (nx < 0 || nx >= N || ny < 0 || ny >= N) continue;
+
+            int nh = h, nd = (A[nx][ny] != 'U') ? d : D;
+            nd ? nd-- : nh--;
+            if (V[nx][ny] >= nh + nd) continue;
+
+            q.push({ nx, ny, nh, nd, cnt + 1 });
+            V[nx][ny] = nh + nd;
         }
-
-        do {
-            int cnt = 0;
-            auto [x, y] = S;
-            int curH = H, curD = 0;
-            bool die = false;
-
-            X.push_back(K);
-            for (int k : X) {
-                auto [nx, ny] = U[k];
-                int dmg = abs(x - nx) + abs(y - ny) - 1;
-                cnt += dmg + 1;
-
-                int m = min(curD, dmg);
-                curD -= m, dmg -= m;
-                curH -= dmg;
-
-                curD = D - 1;
-                x = nx, y = ny;
-
-                if (curH <= 0) { die = true; break; }
-            }
-            X.pop_back();
-
-            if (!die) ret = min(ret, cnt);
-
-        } while(next_permutation(X.begin(), X.end()));
     }
 
     return ret < INF ? ret : -1;
