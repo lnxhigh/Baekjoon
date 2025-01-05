@@ -1,44 +1,36 @@
 #include <bits/stdc++.h>
-#define FastIO cin.tie(0)->sync_with_stdio(0);
 using namespace std;
-const int INF = 1 << 20;
-const int MAX = 20;
+const int MAX = 500005;
 
-int N, A, B;
-unordered_set<int> D[MAX];
+int N, A, B; 
+int D[MAX];
+
+int bfs() {
+    queue<pair<int,int>> q;
+    q.push({ A, 0 }); q.push({ B, 0 });
+
+    while (!q.empty()) {
+        auto [cur, day] = q.front();
+        int jump = 1 << day;
+        q.pop();
+
+        for (int nxt : { cur + jump, cur - jump }) {
+            if (nxt <= 0 || nxt > N) continue;
+
+            // 스스로와 겹치지 않는다는 것을 증명 가능함
+            if (D[nxt] == day + 1) return day + 1;
+            
+            D[nxt] = day + 1;
+            q.push({ nxt, day + 1 });
+        }
+    }
+
+    return -1;
+}
 
 int main() {
-    FastIO
     cin >> N >> A >> B;
-    for (int i = 0; i < (1 << MAX); i++) {
-        int X = A;
-
-        for (int day = 0; day < MAX; day++) {
-            int sign = (i >> day & 1) ? +1 : -1;
-            int jump = 1 << day;
-            X += sign * jump;
-            if (X <= 0 || X > N) break;
-            
-            D[day].insert(X);
-        }
-    }
-
-    int ans = INF;
-
-    for (int i = 0; i < (1 << MAX); i++) {
-        int X = B;
-
-        for (int day = 0; day < MAX; day++) {
-            int sign = (i >> day & 1) ? +1 : -1;
-            int jump = 1 << day;
-
-            X += sign * jump;
-            if (X <= 0 || X > N) break;
-            else if (D[day].find(X) != D[day].end()) { ans = min(ans, day + 1); break; }
-        }
-    }
-
-    if (ans >= INF) ans = -1;
+    int ans = bfs();
     cout << ans << '\n';
     return 0;
 }
