@@ -6,7 +6,7 @@ bool f(int dist, int N, int S, const vector<int> &X) {
     int cnt = 1, cur = 0;
     while (cnt < S) {
         int val = X[cur] + dist;
-        int nxt = lower_bound(X.begin(), X.end(), val) - X.begin();
+        int nxt = lower_bound(X.begin() + cur, X.end(), val) - X.begin();
         if (nxt >= N) break;
         
         cnt++;
@@ -40,6 +40,6 @@ int main() {
 
         cout << ans << '\n';
     }
-    
+
     return 0;
 }
