@@ -21,13 +21,9 @@ int main() {
     D[0] = 1;
 
     double ans = 0;
-    int iter = 100000;
+    int iter = 10000;
 
     for (int k = 1; k < iter; k++) {
-        for (int x : graph[N - 1]) {
-            ans += k * D[x] / graph[x].size();
-        }
-
         vector<double> T(N);
         for (int i = 0; i < N - 1; i++) {
             for (int x : graph[i]) {
@@ -35,9 +31,8 @@ int main() {
             }
         }
 
-        for (int i = 0; i < N; i++) {
-            D[i] = T[i];
-        }
+        D = T;
+        ans += k * D[N - 1];
     }
 
     cout << setprecision(16);
