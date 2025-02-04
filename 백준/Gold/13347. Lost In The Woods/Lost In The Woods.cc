@@ -9,8 +9,7 @@ vector<int> graph[MAX];
 int main() {
     FastIO
     cin >> N >> E;
-
-    int cnt = 0;
+    
     for (int i = 0; i < E; i++) {
         int X, Y; cin >> X >> Y;
         graph[X].push_back(Y);
