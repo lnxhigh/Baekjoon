@@ -10,6 +10,7 @@ bool finish;
 bool cycle[MAX];
 int par[MAX];
 bool vis[MAX];
+int dst[MAX];
 
 void dfs(int cur, int prv) {
     vis[cur] = true;
@@ -32,24 +33,14 @@ void dfs(int cur, int prv) {
     }
 }
 
-int bfs(int x) {
-    queue<pair<int,int>> q;
-    q.push({ x, 0 });
-    vis[x] = true;
+void perf(int cur, int val) {
+    vis[cur] = true;
+    dst[cur] = val;
 
-    while (!q.empty()) {
-        auto [cur, level] = q.front();
-        q.pop();
-        if (cycle[cur]) return level;
-
-        for (int nxt : graph[cur]) {
-            if (vis[nxt]) continue;
-            q.push({ nxt, level + 1 });
-            vis[nxt] = true;
-        }
+    for (int nxt : graph[cur]) {
+        if (vis[nxt] || cycle[nxt]) continue;
+        perf(nxt, val + 1);
     }
-
-    return 0;
 }
 
 int main() {
@@ -63,12 +54,17 @@ int main() {
     }
 
     dfs(0, -1);
-    
+
+    memset(vis, false, sizeof(vis));
     for (int i = 0; i < N; i++) {
-        memset(vis, false, sizeof(vis));
-        cout << bfs(i) << ' ';
+        if (cycle[i] && graph[i].size() > 2u) {
+            perf(i, 0);
+        }
+    }
+
+    for (int i = 0; i < N; i++) {
+        cout << dst[i] << ' ';
     }
     cout << '\n';
-
     return 0;
 }
