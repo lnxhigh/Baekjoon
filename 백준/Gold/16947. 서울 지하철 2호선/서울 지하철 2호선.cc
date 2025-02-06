@@ -6,20 +6,25 @@ const int MAX = 3001;
 int N;
 vector<int> graph[MAX];
 
+bool finish;
 bool cycle[MAX];
+int par[MAX];
 bool vis[MAX];
 
 void dfs(int cur, int prv) {
     vis[cur] = true;
+    par[cur] = prv;
 
     for (int nxt : graph[cur]) {
-        if (nxt == prv) {
-            continue;
-        }
+        if (finish) return;
+        else if (nxt == par[cur]) continue;
 
         if (vis[nxt]) {
+            finish = true;
+            for (int x = cur; x != nxt; x = par[x]) {
+                cycle[x] = true;
+            }
             cycle[nxt] = true;
-            return;
         }
         else {
             dfs(nxt, cur);
@@ -57,11 +62,8 @@ int main() {
         graph[y].push_back(x);        
     }
 
-    for (int i = 0; i < N; i++) {
-        memset(vis, false, sizeof(vis));
-        dfs(i, -1);
-    }
-
+    dfs(0, -1);
+    
     for (int i = 0; i < N; i++) {
         memset(vis, false, sizeof(vis));
         cout << bfs(i) << ' ';
