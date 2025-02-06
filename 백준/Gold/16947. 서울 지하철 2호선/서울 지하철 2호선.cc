@@ -5,65 +5,44 @@ const int MAX = 3001;
 
 int N;
 vector<int> graph[MAX];
+int par[MAX], deg[MAX], dst[MAX];
 
-bool finish;
-bool cycle[MAX];
-int par[MAX];
-bool vis[MAX];
-int dst[MAX];
-
-void dfs(int cur, int prv) {
-    vis[cur] = true;
-    par[cur] = prv;
-
-    for (int nxt : graph[cur]) {
-        if (finish) return;
-        else if (nxt == par[cur]) continue;
-
-        if (vis[nxt]) {
-            finish = true;
-            for (int x = cur; x != nxt; x = par[x]) {
-                cycle[x] = true;
-            }
-            cycle[nxt] = true;
-        }
-        else {
-            dfs(nxt, cur);
-        }
-    }
-}
-
-void perf(int cur, int val) {
-    vis[cur] = true;
-    dst[cur] = val;
-
-    for (int nxt : graph[cur]) {
-        if (vis[nxt] || cycle[nxt]) continue;
-        perf(nxt, val + 1);
-    }
+int dfs(int x) {
+    if (deg[x]) return 0;
+    else if (dst[x]) return dst[x];
+    return dst[x] = dfs(par[x]) + 1;
 }
 
 int main() {
     FastIO
     cin >> N;
     for (int i = 0; i < N; i++) {
-        int x, y; cin >> x >> y;
-        --x, --y;
+        int x, y; cin >> x >> y; --x, --y;
         graph[x].push_back(y);
-        graph[y].push_back(x);        
+        graph[y].push_back(x);
+        deg[x]++, deg[y]++;
     }
 
-    dfs(0, -1);
-
-    memset(vis, false, sizeof(vis));
+    queue<int> q;
+    memset(par, -1, sizeof(par));
     for (int i = 0; i < N; i++) {
-        if (cycle[i] && graph[i].size() > 2u) {
-            perf(i, 0);
+        if (deg[i] <= 1) q.push(i);
+    }
+    
+    while (!q.empty()) {
+        int cur = q.front();
+        q.pop();
+        
+        for (int nxt : graph[cur]) {
+            if (deg[nxt] == 0) continue;
+            par[cur] = nxt;
+            --deg[cur], --deg[nxt];
+            if (deg[nxt] <= 1) q.push(nxt);
         }
     }
 
     for (int i = 0; i < N; i++) {
-        cout << dst[i] << ' ';
+        cout << dfs(i) << ' ';
     }
     cout << '\n';
     return 0;
