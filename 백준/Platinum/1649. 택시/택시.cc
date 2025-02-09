@@ -10,8 +10,8 @@ int X, Y;
 int K;
 set<int> C;
 
-int D[MAX][MAX];
 int inDegree[MAX];
+long long D[MAX];
 
 void input() {
     cin >> N >> M;
@@ -29,54 +29,36 @@ void input() {
     }
 }
 
-vector<int> toposort() {
-    // Topological Sort
+long long solve() {
     queue<int> q;
     for (int i = 1; i <= N; i++) {
         if (inDegree[i] == 0) q.push(i);
     }
+    D[X] = 1;
 
-    vector<int> vec(N);
-    for (int i = 0; i < N; i++) {
+    for (int i = 1; i <= N; i++) {
         int cur = q.front();
         q.pop();
-        
-        vec[i] = cur;
+
+        if (C.count(cur)) {
+            for (int k = 1; k <= N; k++) {
+                if (k != cur) D[k] = 0;
+            }
+        }
+
         for (int nxt : graph[cur]) {
+            D[nxt] += D[cur];
             if (--inDegree[nxt] == 0) q.push(nxt);
         }
     }
 
-    return vec;
-}
-
-int dfs(int i, int j) {
-    if (D[i][j] != -1) return D[i][j];
-    else if (i == j) return D[i][j] = 1;
-    
-    int cnt = 0;
-    for (int k : graph[i]) {
-        cnt += dfs(k, j);
-    }
-    return D[i][j] = cnt;
+    return D[Y];
 }
 
 int main() {
     FastIO
     input();
-
-    int ans = 1, cur = X;
-    auto topo = toposort();
-    memset(D, -1, sizeof(D));
-    
-    for (int i : topo) {
-        if (ans == 0) break;
-        else if (!C.count(i)) continue;
-        ans *= dfs(cur, i);
-        cur = i;
-    }
-
-    ans *= dfs(cur, Y);
+    int ans = solve();
     cout << ans << '\n';
     return 0;
 }
