@@ -3,175 +3,80 @@
 using namespace std;
 
 int N;
-bool D[10][10];
+bool G[10][10], B[10][10];
 
-void putBlock(int t, int x, int y) {
-    int row = x, col = y;
-    
+bool check(int idx, bool all, bool D[10][10]) {
+    int cnt = 0;
+    for (int col = 0; col < 4; col++) {
+        if (D[idx][col]) cnt++;
+    }
+
+    if (all) return cnt >= 4;
+    return cnt > 0;
+}
+
+void clear(int idx, bool D[10][10]) {
+    for (int col = 0; col < 4; col++) {
+        D[idx][col] = false;
+    }
+}
+
+void move(int idx, int len, bool D[10][10]) {
+    for (int col = 0; col < 4; col++) {
+        if (!D[idx][col]) continue;
+        
+        D[idx][col] = false;
+        D[idx + len][col] = true;
+    }
+}
+
+void first(int t, int x, int y, bool D[10][10]) {
     if (t == 1) {
-        row = x, col = y;
-        while (row + 1 < 10 && !D[row + 1][col]) row++;
-        D[row][col] = true;
-
-        row = x, col = y;
-        while (col + 1 < 10 && !D[row][col + 1]) col++;
-        D[row][col] = true;
+        while (x + 1 < 10 && !D[x + 1][y]) x++;
+        D[x][y] = true;
     }
     else if (t == 2) {
-        row = x, col = y;
-        while (row + 1 < 10 && !D[row + 1][col] && !D[row + 1][col + 1]) row++;
-        D[row][col] = D[row][col + 1] = true;
-
-        row = x, col = y;
-        while (col + 2 < 10 && !D[row][col + 1] && !D[row][col + 2]) col++;
-        D[row][col] = D[row][col + 1] = true;
+        while (x + 1 < 10 && !D[x + 1][y] && !D[x + 1][y + 1]) x++;
+        D[x][y] = D[x][y + 1] = true;
     }
     else if (t == 3) {
-        row = x, col = y;
-        while (row + 2 < 10 && !D[row + 1][col] && !D[row + 2][col]) row++;
-        D[row][col] = D[row + 1][col] = true;
-
-        row = x, col = y;
-        while (col + 1 < 10 && !D[row][col + 1] && !D[row + 1][col + 1]) col++;
-        D[row][col] = D[row + 1][col] = true;
+        while (x + 2 < 10 && !D[x + 1][y] && !D[x + 2][y]) x++;
+        D[x][y] = D[x + 1][y] = true;
     }
 }
 
-bool checkAll(int idx, bool green) {
-    if (green) {
-        for (int col = 0; col < 4; col++) {
-            if (!D[idx][col]) return false;
-        }
-    }
-    else {
-        for (int row = 0; row < 4; row++) {
-            if (!D[row][idx]) return false;
-        }
-    }
-
-    return true;
-}
-
-bool checkExist(int idx, bool green) {
-    if (green) {
-        for (int col = 0; col < 4; col++) {
-            if (D[idx][col]) return true;
-        }
-    }
-    else {
-        for (int row = 0; row < 4; row++) {
-            if (D[row][idx]) return true;
-        }
-    }
-
-    return false;
-}
-
-int eraseLine() {
-    // Green
-    int rowcnt = 0, rowidx = -1;
-    for (int row = 9; row >= 6; row--) {
-        bool chk = checkAll(row, true);
-        if (!chk) continue;
-        
-        rowcnt++, rowidx = row - 1;
-        for (int col = 0; col < 4; col++) {
-            D[row][col] = false;
-        }
-    }
-
-    if (rowcnt) {
-        for (int row = rowidx; row >= 4; row--) {
-            for (int col = 0; col < 4; col++) {
-                if (D[row][col]) {
-                    D[row][col] = false;
-                    D[row + rowcnt][col] = true;
-                }
-            }
-        }
-    }
-
-    // Blue
-    int colcnt = 0, colidx = -1;
-    for (int col = 9; col >= 6; col--) {
-        bool chk = checkAll(col, false);
-        if (!chk) continue;
-
-        colcnt++, colidx = col - 1;
-        for (int row = 0; row < 4; row++) {
-            D[row][col] = false;
-        }
-    }
-
-    if (colcnt) {
-        for (int col = colidx; col >= 4; col--) {
-            for (int row = 0; row < 4; row++) {
-                if (D[row][col]) {
-                    D[row][col] = false;
-                    D[row][col + colcnt] = true;
-                }
-            }
-        }
-    }
-
-    return rowcnt + colcnt;
-}
-
-void pushLine() {
-    // Green
-    int rowcnt = 0;
-    if (checkExist(4, true)) rowcnt++;
-    if (checkExist(5, true)) rowcnt++;
-
-    if (rowcnt) {
-        for (int row = 9; row > 9 - rowcnt; row--) {
-            for (int col = 0; col < 4; col++) {
-                D[row][col] = false;
-            }
-        }
-            
-        for (int row = 9 - rowcnt; row >= 4; row--) {
-            for (int col = 0; col < 4; col++) {
-                if (D[row][col]) {
-                    D[row][col] = false;
-                    D[row + rowcnt][col] = true;
-                }
-            }
-        }
-    }
-
-    // Blue
-    int colcnt = 0;
-    if (checkExist(4, false)) colcnt++;
-    if (checkExist(5, false)) colcnt++;
-
-    if (colcnt) {
-        for (int col = 9; col > 9 - colcnt; col--) {
-            for (int row = 0; row < 4; row++) {
-                D[row][col] = false;
-            }
-        }
+void second(bool D[10][10], int& score) {
+    int cnt = 0, idx = -1;
     
-        for (int col = 9 - colcnt; col >= 4; col--) {
-            for (int row = 0; row < 4; row++) {
-                if (D[row][col]) {
-                    D[row][col] = false;
-                    D[row][col + colcnt] = true;
-                }
-            }
+    for (int row = 9; row >= 6; row--) {
+        if (check(row, true, D)) {
+            cnt++;
+            idx = row - 1;
+            clear(row, D);
         }
+    }
+    
+    score += cnt;
+    if (cnt == 0 || idx == -1) return;
+
+    for (int row = idx; row >= 4; row--) {
+        move(row, cnt, D);
     }
 }
 
-void print() {
-    for (int i = 0; i < 10; i++) {
-        for (int j = 0; j < 10; j++) {
-            if (i >= 4 && j >= 4) continue;
-            char c = D[i][j] ? 'X' : '.';
-            cout << c << ' ';
-        }
-        cout<<endl;
+void third(bool D[10][10]) {
+    int cnt = 0;
+    for (int row = 4; row <= 5; row++) {
+        if (check(row, false, D)) cnt++;
     }
+    if (cnt == 0) return;
+
+    for (int row = 9; row > 9 - cnt; row--) {
+        clear(row, D);
+    }
+    for (int row = 9 - cnt; row >= 4; row--) {
+        move(row, cnt, D);
+    } 
 }
 
 int main() {
@@ -183,16 +88,21 @@ int main() {
 
     while (N--) {
         int t, x, y; cin >> t >> x >> y;
-        putBlock(t, x, y);
-        score += eraseLine();
-        pushLine();
+
+        first(t, x, y, G);
+        second(G, score);
+        third(G);
+
+        if (t != 1) t = 5 - t;
+        first(t, y, x, B);
+        second(B, score);
+        third(B);
     }
 
     for (int i = 0; i < 10; i++) {
         for (int j = 0; j < 10; j++) {
-            if (D[i][j]) {
-                cnt++;
-            }
+            if (G[i][j]) cnt++;
+            if (B[i][j]) cnt++;
         }
     }
 
