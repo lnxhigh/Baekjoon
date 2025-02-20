@@ -10,7 +10,7 @@ int D[MAX], P[MAX];
 int dfs(int x, bool init) {
     if (x == 1 && !init) return 0;
     else if (D[x]) return D[x];
-    
+
     for (int i = 1; i <= N; i++) {
         if (!A[x][i]) continue;
 
@@ -19,20 +19,6 @@ int dfs(int x, bool init) {
     }
 
     return D[x];
-}
-
-void print(int x, bool init) {
-    cout << x << ' ';
-    if (x == 1 && !init) return;
-    
-    for (int i = 1; i <= N; i++) {
-        if (!A[x][i]) continue;
-
-        if (dfs(x, init) == A[x][i] + dfs(i, false)) {
-            print(i, false);
-            return;
-        }
-    }
 }
 
 int main() {
@@ -45,7 +31,16 @@ int main() {
 
     int ans = dfs(1, true);
     cout << ans << '\n';
-    print(1, true);
+
+    int x = 1;
+    bool init = true;
     
+    while (init || x != 1) {
+        cout << x << ' ';
+        x = P[x];
+        init = false;
+    }
+    cout << 1 << '\n';
+
     return 0;
 }
