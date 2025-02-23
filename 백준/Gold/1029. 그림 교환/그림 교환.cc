@@ -1,7 +1,7 @@
 #include <bits/stdc++.h>
 #define FastIO cin.tie(0)->sync_with_stdio(0);
 using namespace std;
-const int MAX = 16;
+const int MAX = 15;
 
 int N;
 int A[MAX][MAX];
