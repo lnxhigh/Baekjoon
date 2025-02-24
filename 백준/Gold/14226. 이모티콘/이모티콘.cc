@@ -21,6 +21,10 @@ int solve() {
             ret = min(ret, t);
             continue;
         }
+        
+        if (t >= ret) {
+            continue;
+        }
 
         // save
         if (!D[x][x]) {
