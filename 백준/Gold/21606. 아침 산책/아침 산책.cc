@@ -54,7 +54,7 @@ int main() {
             }
         }
         else {
-            ans += bfs(i);
+            if (!V[i]) ans += bfs(i);
         }
     }
 
