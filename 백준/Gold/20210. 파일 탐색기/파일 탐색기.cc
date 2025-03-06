@@ -7,12 +7,12 @@ int N;
 string S[MAX];
 
 bool compare(const string &X, const string &Y) {
-    int i = 0, j = 0;
-    
-    while (i < (int) X.size() && j < (int) Y.size()) {
+    size_t i = 0, j = 0;
+
+    while (i < X.size() && j < Y.size()) {
         if (isdigit(X[i]) && isdigit(Y[j])) {
-            int zi = 0, zj = 0;
-            int nxti = i, nxtj = j;
+            size_t zi = 0, zj = 0;
+            size_t nxti = i, nxtj = j;
 
             while (nxti < X.size() && X[nxti] == '0') zi++, nxti++;
             while (nxti < X.size() && isdigit(X[nxti])) nxti++;
@@ -24,8 +24,8 @@ bool compare(const string &X, const string &Y) {
 
             if (nxti - i != nxtj - j) return nxti - i < nxtj - j;
 
-            int len = nxti - i;
-            for (int k = 0; k < len; k++) {
+            size_t len = nxti - i;
+            for (size_t k = 0; k < len; k++) {
                 if (X[i + k] != Y[j + k]) return X[i + k] < Y[j + k];
             }
 
