@@ -13,7 +13,7 @@ int dfs(int day, int a, int b, int f) {
     int& ret = D[day][a][b][f];
     if (ret) return ret;
 
-    ret = dfs(day + 1, a, b - 1, 0) + max(P[day], Q[day]);
+    ret = dfs(day + 1, a, max(b - 1, 0), 0) + max(P[day], Q[day]);
     if (day + b == N) return ret;
     
     if (f < 1) ret = max(ret, dfs(day + 1, a, b, f + 1) + R[day]);
