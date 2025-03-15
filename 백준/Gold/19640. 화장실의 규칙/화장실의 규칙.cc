@@ -7,7 +7,7 @@ int N, M, K;
 int D[MAX], H[MAX];
 
 int F[MAX];
-priority_queue<tuple<int,int,int,int>> pq;
+priority_queue<tuple<int,int,int>> pq;
 
 int main() {
     FastIO
@@ -15,23 +15,22 @@ int main() {
 
     for (int i = 0; i < N; i++) {
         cin >> D[i] >> H[i];
-        if (i < M) pq.push({ D[i], H[i], -i, i });
+        if (i < M) pq.push({ D[i], H[i], -i, });
     }
 
     int cnt = 0;
 
     while (!pq.empty()) {
-        auto [d, h, line, num] = pq.top();
-        line = -line;
+        auto [d, h, x] = pq.top();
+        x = -x;
         pq.pop();
-        
-        if (num == K) break;
-        
-        cnt++;
-        F[line]++;
 
-        int nxt = line + M * F[line];
-        if (nxt < N) pq.push({ D[nxt], H[nxt], -line, nxt });
+        int cur = x + M * F[x];
+        if (cur == K) break;
+        
+        cnt++, F[x]++;
+        int nxt = x + M * F[x];
+        if (nxt < N) pq.push({ D[nxt], H[nxt], -x });
     }
 
     cout << cnt << '\n';
