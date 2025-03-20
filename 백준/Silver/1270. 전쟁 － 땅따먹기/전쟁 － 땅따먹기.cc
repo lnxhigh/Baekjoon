@@ -8,29 +8,24 @@ int main() {
     int N; cin >> N;
 
     for (int i = 0; i < N; i++) {
-        unordered_map<ll,ll> S;
-
         int T; cin >> T;
-        assert(T > 0);
         
+        vector<ll> S(T);
+        for (ll& x : S) cin >> x;
+        sort(S.begin(), S.end());
+
         ll maxNum = 0, maxCnt = 0;
+        int idx = 0, first = 0;
 
-        for (int k = 0; k < T; k++) {
-            ll x; cin >> x;
-            S[x]++;
-
-            if (S[x] > maxCnt) {
-                maxNum = x;
-                maxCnt = S[x];
-            }
+        while (idx < T) {
+            ll cnt = 0;
+            while (idx < T && S[idx] == S[first]) idx++, cnt++;
+            if (cnt > maxCnt) maxNum = S[first], maxCnt = cnt;
+            first = idx;
         }
 
-        if (maxCnt * 2 > T) {
-            cout << maxNum << '\n';
-        }
-        else {
-            cout << "SYJKGW" << '\n';
-        }
+        string ans = (maxCnt * 2 > T) ? to_string(maxNum) : "SYJKGW";
+        cout << ans << '\n';
     }
 
     return 0;
