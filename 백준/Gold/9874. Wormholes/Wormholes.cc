@@ -5,12 +5,73 @@ const int MAX = 1 << 4;
 
 int N;
 pair<int,int> Data[MAX];
+bool used[MAX];
 
 vector<int> D;
+vector<pair<int,int>> matches;
 int ans = 0;
 
 int in(int x) { return x * 2; }
 int out(int x) { return x * 2 + 1; }
+
+bool check(vector<pair<int,int>>& match) {
+    vector<int> P = D;
+    for (auto& [x, y] : match) {
+        P[in(x)] = out(y), P[in(y)] = out(x);
+    }
+    
+    queue<int> q;
+    vector<int> deg(N * 2);
+
+    // Update degree
+    for (int i = 0; i < N * 2; i++) {
+        if (P[i] >= 0) deg[P[i]]++;
+    }
+
+    // Init queue
+    for (int i = 0; i < N * 2; i++) {
+        if (deg[i] == 0) q.push(i);
+    }
+
+    // Check cycle
+    for (int i = 0; i < N * 2; i++) {
+        if (q.empty()) return true;
+
+        int x = q.front();
+        q.pop();
+
+        int nxt = P[x];
+        if (nxt < 0) continue;
+        else if (--deg[nxt] == 0) q.push(nxt);
+    }
+
+    return false;
+}
+
+void dfs(vector<pair<int,int>>& match) {
+    int idx = 0;
+    while (idx < N && used[idx]) idx++;
+    
+    if (idx >= N) {
+        bool stuck = check(match);
+        if (stuck) ans++;
+        return;
+    }
+
+    used[idx] = true;
+
+    for (int other = idx + 1; other < N; ++other) {
+        if (used[other]) continue;
+        
+        used[other] = true;
+        match.push_back({ idx, other });
+        dfs(match);
+        match.pop_back();
+        used[other] = false;
+    }
+    
+    used[idx] = false;
+}
 
 int main() {
     FastIO
@@ -36,59 +97,8 @@ int main() {
         if (inIdx != -1) D[out(i)] = in(inIdx);
     }
 
-    for (int bits = 0; bits < (1 << N); bits++) {
-        int cnt = 0;
-        for (int i = 0; i < N; i++) {
-            if (bits >> i & 1) cnt++;
-        }
-        if (cnt != N / 2) continue;
+    dfs(matches);
 
-        vector<int> one, other;
-        for (int i = 0; i < N; i++) {
-            if (bits >> i & 1) one.push_back(i);
-            else other.push_back(i);
-        }
-
-        do {
-            vector<int> P = D;
-            for (int i = 0; i < N / 2; i++) {
-                int x = one[i], y = other[i];
-                P[in(x)] = out(y), P[in(y)] = out(x);
-            }
-            
-            queue<int> q;
-            vector<int> deg(N * 2);
-            bool stuck = false;
-
-            for (int i = 0; i < N * 2; i++) {
-                if (P[i] >= 0) deg[P[i]]++;
-            }
-
-            for (int i = 0; i < N * 2; i++) {
-                if (deg[i] == 0) q.push(i);
-            }
-
-            for (int i = 0; i < N * 2; i++) {
-                if (q.empty()) {
-                    stuck = true;
-                    break;
-                }
-
-                int x = q.front();
-                q.pop();
-
-                int nxt = P[x];
-                if (nxt < 0) continue;
-                else if (--deg[nxt] == 0) q.push(nxt);
-            }
-
-            if (stuck) ans++;
-
-        } while (next_permutation(other.begin(), other.end()));
-    }
-
-    ans /= (1 << (N / 2));
     cout << ans << '\n';
-
     return 0;
 }
