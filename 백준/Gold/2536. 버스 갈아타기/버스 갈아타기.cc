@@ -14,9 +14,9 @@ void input() {
     cin >> M >> N >> K;
 
     for (int i = 1; i <= K; i++) {
-        int b, x1, y11, x2, y2;
-        cin >> b >> x1 >> y11 >> x2 >> y2;
-        Point p = { x1, y11 }, q = { x2, y2 };
+        int b, x1, y1_, x2, y2;
+        cin >> b >> x1 >> y1_ >> x2 >> y2;
+        Point p = { x1, y1_ }, q = { x2, y2 };
         if (p > q) swap(p, q);
         Data[i] = { p, q };
     }
@@ -31,11 +31,11 @@ void input() {
 
 int ccw(Point &a, Point &b, Point &c) {
     ll x1 = a.first - b.first;
-    ll y11 = a.second - b.second;
+    ll y1_ = a.second - b.second;
     ll x2 = a.first - c.first;
     ll y2 = a.second - c.second;
 
-    ll det = x1 * y2 - x2 * y11;
+    ll det = x1 * y2 - x2 * y1_;
     if (det) det /= abs(det);
     return det;
 }
