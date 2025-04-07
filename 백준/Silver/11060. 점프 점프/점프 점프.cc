@@ -5,32 +5,23 @@ const int MAX = 1 << 10;
 const int INF = 1 << 20;
 
 int N;
-int A[MAX];
 int D[MAX];
-
-int dfs(int x) {
-    if (x >= N - 1) return 0;
-    if (D[x] != -1) return D[x];
-    
-    D[x] = INF;
-    for (int jump = 1; jump <= A[x]; jump++) {
-        D[x] = min(D[x], dfs(x + jump) + 1);
-    }
-    
-    return D[x];
-}
 
 int main() {
     FastIO
     cin >> N;
+
+    fill(D, D + N, INF);
+    D[0] = 0;
+    
     for (int i = 0; i < N; i++) {
-        cin >> A[i];
+        int x; cin >> x;
+        for (int j = 1; j <= x; j++) {
+            if (i + j < N) D[i + j] = min(D[i + j], D[i] + 1);
+        }
     }
-    memset(D, -1, sizeof(D));
 
-    int ans = dfs(0);
-    if (ans >= INF) ans = -1;
+    int ans = (D[N - 1] < INF) ? D[N - 1] : -1;
     cout << ans << '\n';
-
     return 0;
 }
