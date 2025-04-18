@@ -5,46 +5,11 @@ const int MAX = 12;
 int r, c;
 bool arr[MAX][MAX];
 
-bool check(int x, int y) {
-    int male = 0;
-    int female = 0;
+int male[MAX];
+int female[MAX];
 
-    for (int i = 0; i < r; i++) {
-        if ((x >> i & 1) == 0) continue;
-
-        for (int j = 0; j < c; j++) {
-            if (arr[i][j]) {
-                male |= (1 << i);
-                female |= (1 << j);
-            }
-        }
-    }
-
-    for (int i = 0; i < c; i++) {
-        if ((y >> i & 1) == 0) continue;
-
-        for (int j = 0; j < r; j++) {
-            if (arr[j][i]) {
-                male |= (1 << j);
-                female |= (1 << i);
-            }
-        }
-    }
-
-    return (male + 1) == (1 << r) && (female + 1) == (1 << c);
-}
-
-int get(int x, int y) {
-    int cnt = 0;
-    for (int i = 0; i < r; i++) {
-        if (x >> i & 1) cnt++;
-    }
-    for (int i = 0; i < c; i++) {
-        if (y >> i & 1) cnt++;
-    }
-
-    return cnt;
-}
+int match[2][1 << MAX];
+int bitcount[1 << MAX];
 
 int main() {
     cin >> r >> c;
@@ -52,17 +17,48 @@ int main() {
     for (int i = 0; i < r; i++) {
         for (int j = 0; j < c; j++) {
             char x; cin >> x;
-            arr[i][j] = (x == '1');
+            if (x == '1') male[i] |= (1 << j), female[j] |= (1 << i);
+        }
+    }
+
+    for (int i = 0; i < (1 << r); i++) {
+        for (int j = 0; j < r; j++) {
+            if (i >> j & 1) match[0][i] |= male[j];
+        }
+    }
+
+    for (int i = 0; i < (1 << c); i++) {
+        for (int j = 0; j < c; j++) {
+            if (i >> j & 1) match[1][i] |= female[j];
         }
     }
 
     int ans = -1;
+    bool flag = false;
+
+    for (int i = 0; i < r; i++) {
+        if (male[i] == 0) flag = true;
+    }
+    for (int j = 0; j < c; j++) {
+        if (female[j] == 0) flag = true;
+    }
+
+    if (flag) {
+        cout << -1 << '\n';
+        return 0;
+    }
+
+    for (int i = 0; i < (1 << max(r, c)); i++) {
+        bitcount[i] = __builtin_popcount(i);
+    }
 
     for (int i = 0; i < (1 << r); i++) {
         for (int j = 0; j < (1 << c); j++) {
-            if (!check(i, j)) continue;
-            
-            int cnt = get(i, j);
+            int x = i | match[1][j];
+            int y = j | match[0][i];
+            if (x + 1 != (1 << r) || y + 1 != (1 << c)) continue;
+
+            int cnt = bitcount[i] + bitcount[j];
             if (ans == -1) ans = cnt;
             else ans = min(ans, cnt);
         }
