@@ -6,25 +6,21 @@ int main() {
     FastIO
 
     int n; cin >> n;
-    vector<pair<int,int>> interval(n);
-    for (auto& [x, y] : interval) cin >> x >> y;
+    vector<pair<int,int>> arr(n);
+    for (auto& [x, y] : arr) cin >> x >> y;
+    sort(arr.begin(), arr.end());
 
-    vector<int> vec(n);
-
-    // Naive O(n^2)
+    int ans = 0;
 
     for (int i = 0; i < n; i++) {
+        int cnt = 0;
         for (int j = i + 1; j < n; j++) {
-            const auto& [a, b] = interval[i];
-            const auto& [c, d] = interval[j];
-
-            if (a < c && b > d) vec[i]++;
-            else if (c < a && d > b) vec[j]++;
+            if (arr[i].second > arr[j].second) cnt++;
+            else if (arr[i].second < arr[j].first) break;
         }
+        ans = max(ans, cnt);
     }
 
-    int ans = *max_element(vec.begin(), vec.end());
     cout << ans << '\n';
-
     return 0;
 }
