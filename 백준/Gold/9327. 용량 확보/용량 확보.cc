@@ -1,6 +1,7 @@
 #include <bits/stdc++.h>
 #define FastIO cin.tie(0)->sync_with_stdio(0);
 using namespace std;
+const int MAX = 200001;
 
 int main() {
     FastIO
@@ -19,17 +20,12 @@ int main() {
             continue;
         }
 
-        vector<bool> dp(sum + 1);
-        dp[0] = true;
-
-        for (int& x : arr) {
-            for (int i = sum - x; i >= 0; --i) {
-                if (dp[i]) dp[i + x] = true;
-            }
-        }
+        bitset<MAX> dp;
+        dp[0] = 1;
+        for (int x : arr) dp |= (dp << x);
 
         int ans = -1;
-        for (int i = 0; i <= sum && ans == -1; i++) {
+        for (int i = 0; i <= sum && ans < 0; i++) {
             if (dp[i] && i * 2 >= e) ans = i;
         }
 
