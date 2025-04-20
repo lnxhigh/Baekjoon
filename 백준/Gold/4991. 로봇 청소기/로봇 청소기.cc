@@ -26,7 +26,7 @@ int main() {
 
         for (int x = 0; x < r; x++) {
             for (int y = 0; y < c; y++) {
-                if (arr[x][y] == 'x') continue;
+                if (arr[x][y] == 'x' || arr[x][y] == '.') continue;
 
                 queue<tuple<int,int,int>> q;
                 bool vis[20][20] = { false };
