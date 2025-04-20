@@ -31,15 +31,10 @@ int main() {
     FastIO
     cin >> n >> m;
 
-    set<pair<int,int>> s;
-
     while (m--) {
         int x, y; cin >> x >> y;
-        if (!s.count({ x, y })) {
-            s.insert({ x, y }), s.insert({ y, x });
-            graph[x].push_back(y);
-            graph[y].push_back(x);
-        }
+        graph[x].push_back(y);
+        graph[y].push_back(x);
     }
 
     int ans = 0;
