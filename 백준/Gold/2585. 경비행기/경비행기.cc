@@ -6,23 +6,26 @@ const long long INF = 1LL << 60;
 
 int n, k;
 pair<int,int> dat[MAX];
-
-double dist[MAX][MAX];
 pair<int,int> src = { 0, 0 };
 pair<int,int> dst = { 10000, 10000 };
 
-int bfs(double fuel) {
+int bfs(int fuel) {
     queue<pair<int,int>> q;
     q.push({ 0, 0 });
     vector<bool> vis(n + 1);
     vis[0] = true;
+
+    int r2 = fuel * fuel;
 
     while (!q.empty()) {
         auto [from, cnt] = q.front();
         q.pop();
 
         for (int to = 0; to <= n + 1; to++) {
-            if (dist[from][to] <= fuel && !vis[to]) {
+            int dx = dat[from].first - dat[to].first;
+            int dy = dat[from].second - dat[to].second;
+            
+            if ((dx * dx + dy * dy <= r2) && !vis[to]) {
                 q.push({ to, cnt + 1 });
                 vis[to] = true;
 
@@ -38,26 +41,12 @@ int main() {
     FastIO
     cin >> n >> k;
 
-    // data
-
     dat[0] = src;
     for (int i = 1; i <= n; i++) {
         int x, y; cin >> x >> y;
         dat[i] = { x, y };
     }
     dat[n + 1] = dst;
-
-    // cache
-
-    for (int i = 0; i <= n + 1; i++) {
-        for (int j = i; j <= n + 1; j++) {
-            int dx = dat[i].first - dat[j].first;
-            int dy = dat[i].second - dat[j].second;
-            double r = sqrt(dx * dx + dy * dy);
-
-            dist[i][j] = dist[j][i] = r;
-        }
-    }
 
     int ans = 0;
     int lo = 0, hi = 1 << 11;
