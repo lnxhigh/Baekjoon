@@ -31,7 +31,7 @@ int main() {
 
     for (int i = 1; i < n; i++) {
         for (int j = 1; j < n; j++) {
-            map<int,int> first, second;
+            unordered_map<int,int> first, second;
 
             for (int x = 1; x <= i; x++) {
                 for (int y = 1; y <= j; y++) {
