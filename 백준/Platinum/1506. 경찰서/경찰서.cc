@@ -4,78 +4,58 @@ using namespace std;
 const int MAX = 100;
 
 int n;
-int arr[MAX];
-bool adj[MAX][MAX];
+vector<int> arr;
+vector<string> adj;
 
-int par[MAX];
-vector<int> res[MAX];
+int t = 1;
+stack<int> st;
+int vis[MAX], fin[MAX];
 
-int find(int x) {
-    if (x == par[x]) return x;
-    return par[x] = find(par[x]);
-}
+int ans = 0;
 
-bool merge(int x, int y) {
-    x = find(x), y = find(y);
-    if (x == y) return false;
-    else if (x < y) swap(x, y);
-    par[x] = y;
-    return true;
+int dfs(int x) {
+    vis[x] = t++;
+    st.push(x);
+    int low = vis[x];
+
+    for (int nxt = 0; nxt < n; nxt++) {
+        if (adj[x][nxt] != '1') continue;
+        
+        if (!vis[nxt]) low = min(low, dfs(nxt));
+        else if (!fin[nxt]) low = min(low, vis[nxt]);
+    }
+
+    if (low == vis[x]) {
+        int add = 0;
+
+        while (!st.empty()) {
+            int top = st.top();
+            st.pop();
+
+            fin[top] = low;
+            add = add ? min(add, arr[top]) : arr[top];
+            
+            if (top == x) break;
+        }
+
+        ans += add;
+    }
+    
+    return low;
 }
 
 int main() {
     FastIO
 
-    // Input
-
     cin >> n;
-    for (int i = 0; i < n; i++) {
-        cin >> arr[i];
-    }
-    for (int i = 0; i < n; i++) {
-        for (int j = 0; j < n; j++) {
-            char x; cin >> x;
-            adj[i][j] = (bool) (x - '0');
-        }
-    }
-
-    // Floyd
-
-    for (int k = 0; k < n; k++) {
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < n; j++) {
-                adj[i][j] |= (adj[i][k] && adj[k][j]);
-            }
-        }
-    }
-
-    // DSU
-
-    iota(par, par + n, 0);
+    arr.resize(n), adj.resize(n);
+    for (int& x : arr) cin >> x;
+    for (string& line : adj) cin >> line;
 
     for (int i = 0; i < n; i++) {
-        for (int j = 0; j < n; j++) {
-            if (adj[i][j] && adj[j][i]) {
-                merge(i, j);
-            }
-        }
-    }
-
-    // Answer
-
-    int ans = 0;
-
-    for (int i = 0; i < n; i++) {
-        res[find(i)].emplace_back(arr[i]);
-    }
-    
-    for (int i = 0; i < n; i++) {
-        if (res[i].empty()) continue;
-        sort(res[i].begin(), res[i].end());
-        ans += *res[i].begin();
+        if (!fin[i]) dfs(i);
     }
     
     cout << ans << '\n';
-    
     return 0;
 }
