@@ -1,35 +1,39 @@
 #include <bits/stdc++.h>
 #define FastIO cin.tie(0)->sync_with_stdio(0);
 using namespace std;
-const int MAX = 250'001;
+const int MAX = 250'005;
 
-long long ans = 0;
+int n;
+int arr[MAX];
 int h[MAX], l[MAX], r[MAX];
-set<int> low, high;
+
+// Doubly linked list
+int a[MAX], b[MAX];
 
 int main() {
     FastIO
+    
+    cin >> n;
+    for (int i = 1; i <= n; i++) {
+        int x; cin >> x;
+        arr[i] = x + 1;
+        a[i] = i - 1, b[i] = i + 1;
+    }
+    
+    long long ans = 0;
 
-    int n; cin >> n;
-    while (n--) {
-        int x; cin >> x; x++;
-        
-        auto a = low.upper_bound(x);
-        auto b = high.upper_bound(-x);
+    for (int i = n; i > 0; i--) {
+        int x = arr[i];
+        l[x] = a[x], r[x] = b[x];
+        a[b[x]] = a[x], b[a[x]] = b[x];
+    }
 
-        int p = 0;
-        if ((a != low.end()) && (l[*a] == 0)) p = *a;
-        else if ((b != high.end() && (r[-(*b)] == 0))) p = -(*b);
-
-        h[x] = h[p] + 1;
-        ans += (long long) h[x];
-        if (p) x < p ? l[p] = x : r[p] = x;
-
-        low.insert(x);
-        high.insert(-x);
+    for (int i = 1; i <= n; i++) {
+        int x = arr[i];
+        h[x] = max(h[l[x]], h[r[x]]) + 1;
+        ans += h[x];
     }
 
     cout << ans << '\n';
-
     return 0;
 }
