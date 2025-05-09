@@ -10,6 +10,12 @@ bool vis[MAX];
 bool color[MAX];
 vector<int> group[2];
 
+void print(vector<int>& vec) {
+    if (!vec.empty()) sort(vec.begin(), vec.end());
+    for (int x : vec) cout << x + 1 << ' ';
+    cout << -1 << '\n';
+}
+
 bool dfs(int x, bool flag) {
     bool ret = true;
     vis[x] = true;
@@ -42,24 +48,12 @@ int main() {
         if (vis[i]) continue;
         chk &= dfs(i, false);
     }
-    
-    if (chk) {
-        cout << 1 << '\n';
 
-        for (int g = 0; g <= 1; g++) {
-            if (!group[g].empty()) {
-                sort(group[g].begin(), group[g].end());
-            }
+    // The complement of a bipartite graph is perfect
 
-            for (int x : group[g]) {
-                cout << x + 1 << ' ';
-            }
-            cout << -1 << '\n';
-        }
-    }
-    else {
-        cout << -1 << '\n';
-    }
+    int ans = chk ? 1 : -1;
+    cout << ans << '\n';
+    if (chk) print(group[0]), print(group[1]);
 
     return 0;
 }
