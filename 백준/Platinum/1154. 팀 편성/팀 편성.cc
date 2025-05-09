@@ -42,17 +42,6 @@ int main() {
         if (vis[i]) continue;
         chk &= dfs(i, false);
     }
-
-    for (int g = 0; g <= 1; g++) {
-        vector<int>& team = group[g];
-        int m = team.size();
-
-        for (int i = 0; i < m; i++) {
-            for (int j = i + 1; j < m; j++) {
-                chk &= graph[team[i]][team[j]];
-            }
-        }
-    }
     
     if (chk) {
         cout << 1 << '\n';
