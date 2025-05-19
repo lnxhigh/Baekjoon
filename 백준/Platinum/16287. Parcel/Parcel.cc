@@ -5,25 +5,30 @@ const int MAX = 5000;
 
 int n, w;
 int arr[MAX];
-bitset<800001> dp[5];
+bool dp[1 << 20];
+
+bool solve() {
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < i - 1; j++) {
+            dp[arr[j] + arr[i - 1]] = true;
+        }
+        for (int j = i + 1; j < n; j++) {
+            int x = w - arr[i] - arr[j];
+            if (x >= 0 && dp[x]) return true;
+        }
+    }
+
+    return false;
+}
 
 int main() {
     FastIO
-
-    cin >> w >> n;
-    for (int i = 0; i < n; i++) {
-        cin >> arr[i];
-    }
-
-    dp[0][0] = 1;
-
-    for (int i = 0; i < n; i++) {
-        for (int k = 4; k; k--) {
-            dp[k] |= dp[k - 1] << arr[i];
-        }
-    }
     
-    string ans = dp[4][w] ? "YES" : "NO";
+    cin >> w >> n;
+    for (int i = 0; i < n; i++) cin >> arr[i];
+
+    string ans = solve() ? "YES" : "NO";
     cout << ans << '\n';
+    
     return 0;
 }
