@@ -2,57 +2,58 @@
 #define FastIO cin.tie(0)->sync_with_stdio(0);
 using namespace std;
 
-int vis[101][20001];
-
 int main() {
     FastIO
     int t; cin >> t;
+
     while (t--) {
         int n; cin >> n;
-        memset(vis, -1, sizeof(vis));
+        vector<int> pre(n, -1);
+        vector<bool> vis(n);
+        vector<char> choice(n);
 
-        queue<pair<int,int>> q;
-        q.push({ 1, 1 % n });
-        vis[1][1 % n] = 0;
+        queue<int> q;
+        bool found = false;
 
-        int x = -1;
+        q.push(1 % n);
+        vis[1 % n] = true;
+        choice[1 % n] = '1';
+        
+        for (int i = 1; i <= 100 && !found; i++) {
+            int cnt = q.size();
 
-        while (!q.empty()) {
-            auto [cnt, r] = q.front();
-            q.pop();
+            for (int j = 0; j < cnt && !found; j++) {
+                int r = q.front();
+                q.pop();
 
-            if (r == 0) { x = cnt; break; }
+                if (r == 0) found = true;
+                if (found) break;
 
-            int a = (10 * r) % n;
-            int b = (10 * r + 1) % n;
-            cnt++;
-
-            if (cnt <= 100 && vis[cnt][a] == -1) q.push({ cnt, a }), vis[cnt][a] = r;
-            if (cnt <= 100 && vis[cnt][b] == -1) q.push({ cnt, b }), vis[cnt][b] = r;
+                for (int k = 0; k < 2; k++) {
+                    int nxt = (10 * r + k) % n;
+                    if (vis[nxt]) continue;
+                    
+                    q.push(nxt);
+                    pre[nxt] = r, vis[nxt] = true;
+                    choice[nxt] = (char)('0' + k);
+                }
+            }
         }
 
-        if (x == -1) {
-            cout << "BRAK" << '\n';
+        if (found) {
+			stack<char> path;
+            for (int r = 0; r != -1; r = pre[r]) {
+                path.push(choice[r]);
+            }
+
+            while (!path.empty()) {
+                cout << path.top();
+                path.pop();
+            }
+            cout << '\n';
         }
         else {
-            int r = 0;
-            vector<int> path;
-
-            for (int i = x; i > 0; i--) {
-                path.push_back(r);
-                r = vis[i][r];
-            }
-            path.push_back(0);
-
-            reverse(path.begin(), path.end());
-
-            for (int i = 1; i < path.size(); i++) {
-                int x = path[i - 1], y = path[i];
-                bool flag = (y == (10 * x + 1) % n);
-                cout << flag;
-            }
-            
-            cout << '\n';
+            cout << "BRAK" << '\n';
         }
     }
 
