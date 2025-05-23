@@ -1,134 +1,180 @@
-#include <iostream>
-#include <queue>
-#include <utility>
+#include <bits/stdc++.h>
 using namespace std;
-using xy = pair<int,int>;
-
-int N, M;
-char board[11][11];
-xy red, blue, destination;
-typedef struct marble {
-    xy red;
-    xy blue;
-} Marble;
-queue<pair<Marble, int>> q;
-
-Marble marble;
-
-void input(char board[11][11]) {
-    cin >> N >> M;
-
-    for (int r = 0; r < N; r++) {
-        char line[11];
-        cin >> line;
-        for (int c = 0; c < M; c++) {
-            board[r][c] = line[c];
-            char x = board[r][c];
-            if (x == 'R') { red = {r,c}; } 
-            else if (x == 'B') { blue = {r,c}; }
-            else if (x == 'O') { destination = {r,c}; }
-        }
-    }
-
-    board[red.first][red.second] = '.';
-    board[blue.first][blue.second] = '.';
-
-    marble.red = red;
-    marble.blue = blue;
+int n,m;//세로,가로.
+int rx,ry;
+int bx,by;
+int vis[10][10][10][10];
+int arr[10][10];
+queue<array<int,5>> q;
+//진짜 값만 넣음.
+int chkx(int x)
+{
+  if(x<0||x>=m) return 1;
+  else return 0;
 }
-
-void print(Marble marble, char board[11][11]) {
-    xy red = marble.red;
-    xy blue = marble.blue;
-    board[red.first][red.second] = 'R';
-    board[blue.first][blue.second] = 'B';
-    board[destination.first][destination.second] = 'O';
-
-    for (int i = 0; i < N; i++) {
-        for (int j = 0; j < M; j++) {
-            cout << board[i][j] << ' ';
-        }
-        cout << '\n';
-    }
-    cout << '\n';
-
-    board[red.first][red.second] = '.';
-    board[blue.first][blue.second] = '.';
+int chky(int y)
+{
+  if(y<0||y>=n) return 1;
+  else return 0;
 }
-
-Marble moveTo(Marble marble, int i, char board[11][11]) {
-    xy red = marble.red;
-    xy blue = marble.blue;
-    int n_red_moved = 0, n_blue_moved = 0;
-
-    // Up Down Left Right
-    int dx[4] = {-1,+1, 0, 0};
-    int dy[4] = { 0, 0,-1,+1};
-
-    while (board[red.first][red.second] == '.') {
-        red.first += dx[i];
-        red.second += dy[i];
-        n_red_moved++;
-    }
-    
-    while (board[blue.first][blue.second] == '.') {
-        blue.first += dx[i];
-        blue.second += dy[i];
-        n_blue_moved++;
-    }
-
-    if (board[red.first][red.second] == '#') {
-        red.first -= dx[i]; 
-        red.second -= dy[i];
-    }
-    if (board[blue.first][blue.second] == '#') {
-        blue.first -= dx[i];
-        blue.second -= dy[i];
-    }
-
-    if (red == destination and blue == destination) {
-        return { red, blue };
-    }
-
-    if (red == blue) {
-        if (n_red_moved > n_blue_moved) {
-            red.first -= dx[i];
-            red.second -= dy[i];
-        }
-        else {
-            blue.first -= dx[i];
-            blue.second -= dy[i];
-        }
-    }
-    
-    return { red, blue };
+void push(int y1,int x1,int y2,int x2,int t)
+{
+  if(t>10) return;
+  if(x1<0||x1>=m||x2<0||x2>=m) return;
+  if(y1<0||y1>=n||y2<0||y2>=n) return;
+  if(vis[y1][x1][y2][x2]) return;
+  if(y1==y2&&x1==x2) return;
+  vis[y1][x1][y2][x2]=1;
+  //cout<<"         "<<y1<<" "<<x1<<" "<<y2<<" "<<x2<<" "<<t<<endl;
+  q.push({y1,x1,y2,x2,t});
 }
-
-int bfs() {
-    q.push({marble, 1});
-    while (not q.empty()) {
-        Marble cur = q.front().first;
-        int depth = q.front().second;
-        q.pop();
-        if (depth > 10) return -1;
-
-        for (int i = 0; i < 4; i++) {
-            Marble next = moveTo(cur, i, board);
-            if (next.red != destination and next.blue != destination) {
-                q.push({ next, depth+1 });
-            }
-            else if (next.red == destination and next.blue != destination) {
-                return depth; 
-            }
-        }
+void bfs()
+{
+  push(ry,rx,by,bx,0);
+  while(!q.empty()){
+    int y1=q.front()[0];
+    int x1=q.front()[1];
+    int y2=q.front()[2];
+    int x2=q.front()[3];
+    int t=q.front()[4];
+    //cout<<y1<<" "<<x1<<" "<<y2<<" "<<x2<<" "<<t<<endl;
+    q.pop();
+    if(arr[y2][x2]==2) continue;
+    if(arr[y1][x1]==2){
+      cout<<t;
+      return;
     }
+    for(int i=0;i<4;i++)// 우 하 상 좌.
+    {
+      int y1p=y1,y2p=y2,x1p=x1,x2p=x2;
+      if(i==0){
+        if(x1p<x2p){
+          while(true){
+            if(arr[y2p][x2p+1]==1) break;
+            x2p++;
+            if(arr[y2p][x2p]==2) break;
+          }
+          while(true){
+            if(arr[y1p][x1p+1]==1||((y1p==y2p&&x1p+1==x2p)&&arr[y2p][x2p]!=2)) break;
+            x1p++;
+            if(arr[y1p][x1p]==2||((y1p==y2p&&x1p==x2p)&&arr[y2p][x2p]!=2)) break;
+          }
+        }
+        else{
+          while(true){
+            if(arr[y1p][x1p+1]==1) break;
+            x1p++;
+            if(arr[y1p][x1p]==2) break;
+          }
+          while(true){
+            if(arr[y2p][x2p+1]==1||((y1p==y2p&&x2p+1==x1p)&&arr[y1p][x1p]!=2)) break;
+            x2p++;
+            if(arr[y2p][x2p]==2||((y1p==y2p&&x2p==x1p)&&arr[y1p][x1p]!=2)) break;
+          }
+        }
+      }
+      else if(i==1){
+        if(y1p>y2p){
+          while(true){
+            if(arr[y1p+1][x1p]==1) break;
+            y1p++;
+            if(arr[y1p][x1p]==2) break;
+          }
+          while(true){
+            if(arr[y2p+1][x2p]==1||((x1p==x2p&&y2p+1==y1p)&&arr[y1p][x1p]!=2)) break;
+            y2p++;
+            if(arr[y2p][x2p]==2||((x1p==x2p&&y2p==y1p)&&arr[y1p][x1p]!=2)) break;
+          }
+        }
+        else{
+           while(true){
+            if(arr[y2p+1][x2p]==1) break;
+            y2p++;
+            if(arr[y2p][x2p]==2) break;
+          }
+          while(true){
+            if(arr[y1p+1][x1p]==1||((x1p==x2p&&y1p+1==y2p)&&arr[y2p][x2p]!=2)) break;
+            y1p++;
+            if(arr[y1p][x1p]==2||((x1p==x2p&&y1p==y2p)&&arr[y2p][x2p]!=2)) break;
+          }
+        }
+      }
+      else if(i==2){
+        if(y1p>y2p){
+          while(true){
+            if(arr[y2p-1][x2p]==1) break;
+            y2p--;
+            if(arr[y2p][x2p]==2) break;
+          }
+          while(true){
+            if(arr[y1p-1][x1p]==1||((y1p-1==y2p&&x1p==x2p)&&arr[y2p][x2p]!=2)) break;
+            y1p--;
+            if(arr[y1p][x1p]==2||((y1p==y2p&&x1p==x2p)&&arr[y2p][x2p]!=2)) break;
+          }
+        }
+        else{
+          while(true){
+            if(arr[y1p-1][x1p]==1) break;
+            y1p--;
+            if(arr[y1p][x1p]==2) break;
+          }
+          while(true){
+            if(arr[y2p-1][x2p]==1||((y1p==y2p-1&&x2p==x1p)&&arr[y1p][x1p]!=2)) break;
+            y2p--;
+            if(arr[y2p][x2p]==2||((y1p==y2p&&x2p==x1p)&&arr[y1p][x1p]!=2)) break;
+          }
+        }
+      }
+      else if(i==3){
+        if(x1p<x2p){
+          while(true){
+            if(arr[y1p][x1p-1]==1) break;
+            x1p--;
+            if(arr[y1p][x1p]==2) break;
+          }
+          while(true){
+            if(arr[y2p][x2p-1]==1||((x1p==x2p-1&&y2p==y1p)&&arr[y1p][x1p]!=2)) break;
+            x2p--;
+            if(arr[y2p][x2p]==2||((x1p==x2p&&y2p==y1p)&&arr[y1p][x1p]!=2)) break;
+          }
+        }
+        else{
+           while(true){
+            if(arr[y2p][x2p-1]==1) break;
+            x2p--;
+            if(arr[y2p][x2p]==2) break;
+          }
+          while(true){
+            if(arr[y1p][x1p-1]==1||((x1p-1==x2p&&y1p==y2p)&&arr[y2p][x2p]!=2)) break;
+            x1p--;
+            if(arr[y1p][x1p]==2||((x1p==x2p&&y1p==y2p)&&arr[y2p][x2p]!=2)) break;
+          }
+        }
+      }
+      push(y1p,x1p,y2p,x2p,t+1);
+    }
+  }
+  cout<<-1;
 }
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr); cout.tie(nullptr);
-
-    input(board);
-    cout << bfs();
-    return 0;
+signed main()
+{
+  cin>>n>>m;
+  for(int y=0;y<n;y++){
+    for(int x=0;x<m;x++){
+      char a;
+      scanf(" %c",&a);
+      if(a=='#') arr[y][x]=1;
+      if(a=='.') arr[y][x]=0;
+      if(a=='O') arr[y][x]=2;
+      if(a=='R'){
+        rx=x;
+        ry=y;
+      }
+      if(a=='B'){
+        bx=x;
+        by=y;
+      }
+    }
+  }
+  bfs();
 }
