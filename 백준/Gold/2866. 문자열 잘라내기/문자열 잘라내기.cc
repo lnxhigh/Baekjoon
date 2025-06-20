@@ -30,11 +30,9 @@ int main() {
     size_t n = c;
     int ans = 0;
 
-    for (int line = 0; line = r; line++) {
+    for (int line = 0; line < r; line++) {
         ans++;
         set<string> nxt;
-        
-        // Performance issue ...
         for (auto str : strs) str.pop_back(), nxt.insert(str);
         strs = move(nxt);
         if (strs.size() < n) { ans--; break; }
