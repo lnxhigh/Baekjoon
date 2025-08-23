@@ -9,14 +9,6 @@ int f(int x)
     return x ^ (x >> 1); // gray code
 }
 
-int _log(int x)
-{
-    int cnt = 0;
-    while (x)
-        cnt++, x >>= 1;
-    return --cnt;
-}
-
 int main()
 {
     FastIO;
@@ -29,8 +21,11 @@ int main()
     {
         int x = f(i);
         int nxt = f(i + 1);
-        int diff = _log(x ^ nxt);
-        cout << ++diff << '\n';
+
+        int t = 0;
+        while ((1 << t) < (x ^ nxt))
+            t++;
+        cout << ++t << '\n';
     }
     cout << n << '\n';
 
