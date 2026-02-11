@@ -6,7 +6,6 @@ int robots[128][128]; // (r,c) 에 존재하는 로봇의 개수
 
 int curr[128]; // i번째 로봇이 현재 있는 포인트
 pair<int,int> now[128]; // i번째 로봇의 좌표
-bool completed[128];
 
 int solution(vector<vector<int>> points, vector<vector<int>> routes) {
     int t = 0;
@@ -58,20 +57,9 @@ int solution(vector<vector<int>> points, vector<vector<int>> routes) {
             int nxt = x + 1;
             vector<int> &route = routes[i];
             
+            if (nxt >= route.size()) continue;
+            
             auto [r, c] = now[i];
-            
-            // 끝났으면 물류 센터를 벗어남
-            if (nxt >= route.size()) {
-                if (!completed[i]) {
-                    completed[i] = true;
-                    
-                    auto [r, c] = now[i];
-                    robots[r][c]--;
-                    now[i] = { -1, -1 };
-                }
-                continue;
-            }
-            
             vector<int> &there = points[route[nxt]];
             
             updated = true;
@@ -104,6 +92,20 @@ int solution(vector<vector<int>> points, vector<vector<int>> routes) {
                     ans++;
                 }
             }
+        }
+        
+        // 끝났으면 물류 센터를 벗어남
+        
+        for (int i = 0; i < m; i++) {
+            int x = curr[i];
+            int nxt = x + 1;
+            vector<int> &route = routes[i];
+            
+            if (nxt < route.size()) continue;
+                    
+            auto [r, c] = now[i];
+            robots[r][c]--;
+            now[i] = { -1, -1 };
         }
         
         // finish 업데이트
