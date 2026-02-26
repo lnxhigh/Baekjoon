@@ -18,8 +18,8 @@ int solution(int n, vector<int> cores) {
         else high = mid - 1;
     }
     
+    int ans = -1;
     int cnt = n - f(t, cores);
-    int ans = 0;
     
     for (int i = 0; i < cores.size() && cnt > 0; i++) {
         if ((t + 1) % cores[i] == 0) cnt--;
