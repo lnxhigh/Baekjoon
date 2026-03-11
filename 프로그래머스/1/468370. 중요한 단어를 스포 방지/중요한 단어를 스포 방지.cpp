@@ -40,10 +40,10 @@ int solution(string msg, vector<vector<int>> ranges) {
             
             if (open) opened.insert(word);
             if (reveal) revealed.push_back(word);
-            
-            //for (int i = x; i <= y; i++) {
-            //    chk[i] = false;
-            //}
+        }
+        
+        for (int i = x; i <= y; i++) {
+            chk[i] = false;
         }
         
         for (const string &word : revealed) {
